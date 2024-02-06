@@ -81,6 +81,8 @@
         <maven.javadoc.version>3.4.1</maven.javadoc.version>
         <maven.assembly.version>3.4.2</maven.assembly.version>
         <maven.plugin.plugin.version>3.9.0</maven.plugin.plugin.version>
+        <!-- Skip publishing of this module -->
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencyManagement>
