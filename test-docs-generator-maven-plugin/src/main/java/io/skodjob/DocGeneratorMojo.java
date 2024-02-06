@@ -1,8 +1,10 @@
+/*
+ * Copyright Skodjob authors.
+ * License: Apache License 2.0 (see the file LICENSE or http://apache.org/licenses/LICENSE-2.0.html).
+ */
 package io.skodjob;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -15,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Map;
 
 import static io.skodjob.DocGenerator.generate;
@@ -33,13 +36,13 @@ public class DocGeneratorMojo extends AbstractMojo {
     @Parameter(property = "generatePath", defaultValue = "./test-docs", required = true, readonly = true)
     String generatePath;
 
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
-    @Parameter( defaultValue = "${plugin}", readonly = true )
+    @Parameter(defaultValue = "${plugin}", readonly = true)
     PluginDescriptor descriptor;
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
 
         getLog().info("Starting generator");
 
@@ -54,8 +57,7 @@ public class DocGeneratorMojo extends AbstractMojo {
             classRealm.addURL(classesFiles.toURI().toURL());
             // Add all jar files in target lib
             addJarFilesToClassPath(new File(project.getBuild().getDirectory()), classRealm);
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
@@ -93,7 +95,7 @@ public class DocGeneratorMojo extends AbstractMojo {
                 if (file.isDirectory()) {
                     // Recursively call the method for subdirectories
                     addJarFilesToClassPath(file, classRealm);
-                } else if (file.isFile() && file.getName().toLowerCase().endsWith(".jar")) {
+                } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".jar")) {
                     // Print the absolute path if it's a .jar file
                     getLog().info("Found .jar file: " + file.getAbsolutePath());
                     classRealm.addURL(file.toURI().toURL());
