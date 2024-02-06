@@ -59,8 +59,9 @@ public class DocGeneratorMojo extends AbstractMojo {
             e.printStackTrace();
         }
 
+        getLog().debug("Loaded files in classpath:");
         for (URL url : classRealm.getURLs()) {
-            getLog().info(url.getFile());
+            getLog().debug(url.getFile());
         }
 
         Map<String, String> classes = getTestClassesWithTheirPath(filePath, generatePath);
