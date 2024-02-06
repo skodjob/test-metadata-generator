@@ -23,6 +23,9 @@ import java.util.Map;
 import static io.skodjob.DocGenerator.generate;
 import static io.skodjob.DocGenerator.getTestClassesWithTheirPath;
 
+/**
+ * DocGeneratorMojo class for Maven plugin handling
+ */
 @Mojo(
         name = "test-docs-generator",
         defaultPhase = LifecyclePhase.COMPILE,
@@ -30,18 +33,40 @@ import static io.skodjob.DocGenerator.getTestClassesWithTheirPath;
 )
 public class DocGeneratorMojo extends AbstractMojo {
 
+    /**
+     * Path where are all test-classes stored
+     */
     @Parameter(property = "filePath", defaultValue = "./test", required = true, readonly = true)
     String filePath;
 
+    /**
+     * Path where the test documentation should be generated to
+     */
     @Parameter(property = "generatePath", defaultValue = "./test-docs", required = true, readonly = true)
     String generatePath;
 
+    /**
+     * Pointer to Maven project
+     * Defaults to current project
+     */
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
+    /**
+     * Descriptor of the plugin
+     * Defaults to current plugin
+     */
     @Parameter(defaultValue = "${plugin}", readonly = true)
     PluginDescriptor descriptor;
 
+    /**
+     * Method for the execution of the test-docs-generator Maven plugin
+     * Generates documentation of test-cases based on specified parameters:
+     *  - {@link #filePath}
+     *  - {@link #generatePath}
+     *  - {@link #project}
+     *  - {@link #descriptor}
+     */
     public void execute() {
 
         getLog().info("Starting generator");
@@ -81,6 +106,14 @@ public class DocGeneratorMojo extends AbstractMojo {
         getLog().info("Done");
     }
 
+    /**
+     * It goes through all files inside the {@param directory} and does two things:
+     *   - in case that file is directory (another package), it recursively calls itself and adds all .jar files to the classPath
+     *   - otherwise adds the .jar files to classPath
+     * @param directory where the files are listed
+     * @param classRealm realm containing all libs set on classPath, from where the test-classes will be loaded
+     * @throws MalformedURLException during URL construction
+     */
     public void addJarFilesToClassPath(File directory, ClassRealm classRealm) throws MalformedURLException {
         // Check if the provided file is a directory
         if (!directory.isDirectory()) {

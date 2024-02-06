@@ -6,17 +6,16 @@ package io.skodjob.markdown;
 
 import java.util.List;
 
+/**
+ * Class responsible for creating representation of Markdown lists in text format, returned as String
+ */
 public class TextList {
 
-    public static String createOrderedList(List<String> objects) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < objects.size(); i++) {
-            builder.append(i + 1 + ". " + objects.get(i) + "\n");
-        }
-
-        return builder.toString();
-    }
-
+    /**
+     * Creates the Markdown unordered list in text format, containing all from the {@param objects}
+     * @param objects list of objects that should be inside the unordered list
+     * @return Markdown unordered list in text format, returned as String
+     */
     public static String createUnorderedList(List<String> objects) {
         StringBuilder builder = new StringBuilder();
         objects.forEach(object ->
