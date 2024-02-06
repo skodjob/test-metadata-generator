@@ -62,7 +62,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/skodjob/opendatahub-crds</url>
+            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator </url>
         </repository>
     </distributionManagement>
 
