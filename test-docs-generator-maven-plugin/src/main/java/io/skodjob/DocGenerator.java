@@ -88,21 +88,7 @@ public class DocGenerator {
         return usesText;
     }
 
-    public static void main(String[] args) throws ClassNotFoundException, IOException {
-        System.out.println("Starting generator");
-        CommandLineOptions cmdOptions = new CommandLineOptions(args);
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-        Map<String, String> classes = getTestClassesWithTheirPath(cmdOptions.getFilePath(), cmdOptions.getGeneratePath());
-
-        for (Map.Entry<String, String> entry : classes.entrySet()) {
-            Class<?> testClass = classLoader.loadClass(entry.getValue());
-
-            generate(testClass, entry.getKey() + ".md");
-        }
-    }
-
-    private static Map<String, String> getTestClassesWithTheirPath(String filePath, String generatePath) {
+    static Map<String, String> getTestClassesWithTheirPath(String filePath, String generatePath) {
         Map<String, String> classes = new HashMap<>();
 
         try {
