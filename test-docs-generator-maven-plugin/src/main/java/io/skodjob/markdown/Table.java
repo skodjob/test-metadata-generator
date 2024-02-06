@@ -6,8 +6,17 @@ package io.skodjob.markdown;
 
 import java.util.List;
 
+/**
+ * Class responsible for creating representation of Markdown table in text format, returned as String
+ */
 public class Table {
 
+    /**
+     * Creates the Markdown table in text format, containing specified headers and rows
+     * @param headers list of headers that should be inside the table
+     * @param rows list of rows added to the table
+     * @return Markdown table in text format, returned as String
+     */
     public static String createTable(List<String> headers, List<String> rows) {
         StringBuilder table = new StringBuilder();
 
@@ -23,11 +32,16 @@ public class Table {
         return table.toString();
     }
 
+    /**
+     * Creates a single row for {@param content}
+     * @param content of the row
+     * @return table row in text format, returned as String
+     */
     public static String createRow(String... content) {
         StringBuilder row = new StringBuilder();
 
-        for (int i = 0; i < content.length; i++) {
-            row.append("| ").append(content[i]);
+        for (String s : content) {
+            row.append("| ").append(s);
         }
 
         row.append(" |");

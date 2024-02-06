@@ -4,13 +4,17 @@
  */
 package io.skodjob.markdown;
 
+/**
+ * Class responsible for applying Markdown text styles to specified text, returned as String
+ */
 public class TextStyle {
 
+    /**
+     * Method for adding bold style to specified {@param text}
+     * @param text that should be in bold style
+     * @return bold stylization for {@param text}
+     */
     public static String boldText(String text) {
         return "**" + text + "**";
-    }
-
-    public static String italicText(String text) {
-        return "_" + text + "_";
     }
 }
