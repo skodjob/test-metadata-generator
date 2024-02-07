@@ -18,6 +18,9 @@ public class Table {
      * @return Markdown table in text format, returned as String
      */
     public static String createTable(List<String> headers, List<String> rows) {
+        if (headers.isEmpty()) {
+            return "";
+        }
         StringBuilder table = new StringBuilder();
 
         table.append("|");
@@ -40,12 +43,12 @@ public class Table {
     public static String createRow(String... content) {
         StringBuilder row = new StringBuilder();
 
+        row.append("| ");
         for (String s : content) {
-            row.append("| ").append(s);
+
+            row.append(s).append(" | ");
         }
 
-        row.append(" |");
-
-        return row.toString();
+        return row.substring(0, row.length() - 1);
     }
 }
