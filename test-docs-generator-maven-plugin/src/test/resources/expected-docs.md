@@ -1,5 +1,27 @@
 # TestClass
 
+**Description:** My test suite containing various tests
+
+**Before tests execution steps:**
+
+| Step | Action | Result |
+| - | - | - |
+| 1. | Deploy uber operator across all namespaces, with custom configuration | Uber operator is deployed |
+| 2. | Deploy management Pod for accessing all other Pods | Management Pod is deployed |
+
+**After tests execution steps:**
+
+| Step | Action | Result |
+| - | - | - |
+| 1. | Delete management Pod | Management Pod is deleted |
+| 2. | Delete uber operator | Uber operator is deleted |
+
+**Use-cases:**
+
+* `core`
+
+<hr style="border:1px solid">
+
 ## testMethodOne
 
 **Description:** Test checking that the application works as expected
@@ -40,12 +62,4 @@
 ## testMethodThree
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
-
-**Steps:**
-
-| Step | Action | Result |
-| - | - | - |
-
-**Use-cases:**
-
 
