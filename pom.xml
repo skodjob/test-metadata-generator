@@ -16,7 +16,7 @@
         </license>
     </licenses>
 
-    <name>Test Metadata Generator</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>Generates metadata for junit tests</description>
     <url>https://github.com/skodjob/test-metadata-generator</url>
 
@@ -52,18 +52,12 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        <!-- This is just a temporary solution-->
-<!--        <repository>-->
-<!--            <id>github</id>-->
-<!--            <name>GitHub Apache Maven Packages</name>-->
-<!--            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator </url>-->
-<!--        </repository>-->
     </distributionManagement>
 
     <modules>
