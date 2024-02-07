@@ -50,20 +50,20 @@
     </developers>
 
     <distributionManagement>
-<!--        <snapshotRepository>-->
-<!--            <id>ossrh</id>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-<!--        </snapshotRepository>-->
-<!--        <repository>-->
-<!--            <id>ossrh</id>-->
-<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
-        <!-- This is just a temporary solution-->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
         <repository>
-            <id>github</id>
-            <name>GitHub Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator </url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        <!-- This is just a temporary solution-->
+<!--        <repository>-->
+<!--            <id>github</id>-->
+<!--            <name>GitHub Apache Maven Packages</name>-->
+<!--            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator </url>-->
+<!--        </repository>-->
     </distributionManagement>
 
     <modules>
@@ -219,6 +219,8 @@
                 <gpg.executable>${env.GPG_EXECUTABLE}</gpg.executable>
                 <!--suppress UnresolvedMavenProperty -->
                 <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+                <!--suppress UnresolvedMavenProperty -->
+                <gpg.keyname>${env.GPG_KEYNAME}</gpg.keyname>
             </properties>
             <build>
                 <plugins>
@@ -268,7 +270,7 @@
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <tarLongFileMode>posix</tarLongFileMode>
                                     <descriptors>
-                                        <descriptor>src/main/assembly/dist.xml</descriptor>
+                                        <descriptor>test-docs-generator-maven-plugin/src/main/assembly/dist.xml</descriptor>
                                     </descriptors>
                                 </configuration>
                             </execution>
