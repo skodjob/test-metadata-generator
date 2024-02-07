@@ -4,7 +4,11 @@
  */
 package io.skodjob;
 
+import io.skodjob.annotations.Desc;
+import io.skodjob.annotations.Step;
+import io.skodjob.annotations.SuiteDoc;
 import io.skodjob.annotations.TestDoc;
+import io.skodjob.annotations.UseCase;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -25,17 +29,31 @@ public class DocGeneratorTest {
         assertThat(compareFiles(expectedFilePath, generatedFilePath), is(true));
     }
 
+    @SuiteDoc(
+        description = @Desc("My test suite containing various tests"),
+        beforeTestSteps = {
+            @Step(value = "Deploy uber operator across all namespaces, with custom configuration", expected = "Uber operator is deployed"),
+            @Step(value = "Deploy management Pod for accessing all other Pods", expected = "Management Pod is deployed")
+        },
+        afterTestSteps = {
+            @Step(value = "Delete management Pod", expected = "Management Pod is deleted"),
+            @Step(value = "Delete uber operator", expected = "Uber operator is deleted")
+        },
+        useCases = {
+            @UseCase(id = "core")
+        }
+    )
     public static class TestClass {
 
         @TestDoc(
-            description = @TestDoc.Desc("Test checking that the application works as expected"),
+            description = @Desc("Test checking that the application works as expected"),
             steps = {
-                @TestDoc.Step(value = "Create object instance", expected = "Instance of an object is created"),
-                @TestDoc.Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
-                @TestDoc.Step(value = "Clean up the test case", expected = "Everything is cleared")
+                @Step(value = "Create object instance", expected = "Instance of an object is created"),
+                @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
+                @Step(value = "Clean up the test case", expected = "Everything is cleared")
             },
-            usecases = {
-                @TestDoc.Usecase(id = "core")
+            useCases = {
+                @UseCase(id = "core")
             }
         )
         void testMethodOne() {
@@ -43,18 +61,18 @@ public class DocGeneratorTest {
         }
 
         @TestDoc(
-            description = @TestDoc.Desc("Test checking that the application works as expected. " +
+            description = @Desc("Test checking that the application works as expected. " +
                     "This is just a little bit longer line, nothing else."),
             steps = {
-                @TestDoc.Step(value = "Create object instance", expected = "Instance of an object is created"),
-                @TestDoc.Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
-                @TestDoc.Step(value = "Clean up the test case", expected = "Everything is cleared"),
-                @TestDoc.Step(value = "Do a magic cleanup check", expected = "Everything magically work")
+                @Step(value = "Create object instance", expected = "Instance of an object is created"),
+                @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
+                @Step(value = "Clean up the test case", expected = "Everything is cleared"),
+                @Step(value = "Do a magic cleanup check", expected = "Everything magically work")
             },
-            usecases = {
-                @TestDoc.Usecase(id = "core"),
-                @TestDoc.Usecase(id = "core+"),
-                @TestDoc.Usecase(id = "core+++")
+            useCases = {
+                @UseCase(id = "core"),
+                @UseCase(id = "core+"),
+                @UseCase(id = "core+++")
             }
         )
         void testMethodTwo() {
@@ -62,12 +80,8 @@ public class DocGeneratorTest {
         }
 
         @TestDoc(
-            description = @TestDoc.Desc("Test checking that the application works as expected. " +
-                    "This is just a little bit longer line, nothing else."),
-            steps = {
-            },
-            usecases = {
-            }
+            description = @Desc("Test checking that the application works as expected. " +
+                    "This is just a little bit longer line, nothing else.")
         )
         void testMethodThree() {
 

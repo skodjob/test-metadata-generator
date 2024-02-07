@@ -4,8 +4,12 @@
  */
 package io.skodjob;
 
+import io.skodjob.annotations.Step;
+import io.skodjob.annotations.SuiteDoc;
 import io.skodjob.annotations.TestDoc;
+import io.skodjob.annotations.UseCase;
 import io.skodjob.markdown.Header;
+import io.skodjob.markdown.Line;
 import io.skodjob.markdown.Table;
 import io.skodjob.markdown.TextList;
 import io.skodjob.markdown.TextStyle;
@@ -37,42 +41,79 @@ public class DocGenerator {
     /**
      * Method that generates test documentation of the specified test-class.
      * Lists all methods (test-cases) annotated by {@link TestDoc} inside the {@param testClass}, creates
-     * parent folders (if needed), new Markdown file for the class, and finally using {@link #createRecord(PrintWriter, TestDoc, String)} generates
-     * documentation for each test-case, written inside the newly created Markdown file.
+     * parent folders (if needed), new Markdown file for the class, and after that generates test-suite documentation using
+     * {@link #createSuiteRecord(PrintWriter, SuiteDoc)} and then test-cases documentation using {@link #createTestRecord(PrintWriter, TestDoc, String)},
+     * all written inside the newly created Markdown file.
      *
      * @param testClass for which the Markdown file is created and test-cases are documented
      * @param classFilePath path of the Markdown file
      * @throws IOException during file creation
      */
     public static void generate(Class<?> testClass, String classFilePath) throws IOException {
+        SuiteDoc suiteDoc = testClass.getAnnotation(SuiteDoc.class);
+
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
             .toList();
 
-        if (!methods.isEmpty()) {
-            String fileName = classFilePath.substring(classFilePath.lastIndexOf('/') + 1);
-            String parentPath = classFilePath.replace(fileName, "");
+        if (suiteDoc != null || !methods.isEmpty()) {
+            PrintWriter printWriter = createFilesForTestClass(classFilePath);
 
-            final File parent = new File(parentPath);
-            if (!parent.mkdirs()) {
-                System.err.println("Could not create parent directories ");
-            }
-            final File classFile = new File(parent, fileName);
-            classFile.createNewFile();
-
-            FileWriter write = new FileWriter(classFile);
-            PrintWriter printWriter = new PrintWriter(write);
-
+            // creating first level header for the test-suite
             printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
 
+            generateDocumentationForTestSuite(printWriter, suiteDoc);
+            generateDocumentationForTestCases(printWriter, methods);
+
+            printWriter.close();
+        }
+    }
+
+    /**
+     * Creates needed files and folders for the particular test-suite (test-class)
+     * @param classFilePath path where the test-suite (test-class) is present
+     * @return file writer
+     * @throws IOException during file creation
+     */
+    private static PrintWriter createFilesForTestClass(String classFilePath) throws IOException {
+        String fileName = classFilePath.substring(classFilePath.lastIndexOf('/') + 1);
+        String parentPath = classFilePath.replace(fileName, "");
+
+        final File parent = new File(parentPath);
+        if (!parent.mkdirs()) {
+            System.err.println("Could not create parent directories ");
+        }
+        final File classFile = new File(parent, fileName);
+        classFile.createNewFile();
+
+        FileWriter write = new FileWriter(classFile);
+        return new PrintWriter(write);
+    }
+
+    /**
+     * Generates documentation for the test-suite (test-class) if {@link SuiteDoc} is present
+     * @param writer file writer
+     * @param suiteDoc containing {@link SuiteDoc} annotation
+     */
+    private static void generateDocumentationForTestSuite(PrintWriter writer, SuiteDoc suiteDoc) {
+        if (suiteDoc != null) {
+            createSuiteRecord(writer, suiteDoc);
+        }
+    }
+
+    /**
+     * Generates documentation records for each test-cases (test-methods) from {@param methods}
+     * @param writer file writer
+     * @param methods containing {@link TestDoc} annotation
+     */
+    private static void generateDocumentationForTestCases(PrintWriter writer, List<Method> methods) {
+        if (!methods.isEmpty()) {
             methods.forEach(method -> {
                 TestDoc testDoc = method.getAnnotation(TestDoc.class);
                 if (testDoc != null) {
-                    createRecord(printWriter, testDoc, method.getName());
+                    createTestRecord(writer, testDoc, method.getName());
                 }
             });
-
-            printWriter.close();
         }
     }
 
@@ -85,18 +126,58 @@ public class DocGenerator {
      * @param testDoc annotation containing all @TestDoc objects, from which is the record generated
      * @param methodName name of the test-case containing {@param testDoc}
      */
-    public static void createRecord(PrintWriter write, TestDoc testDoc, String methodName) {
+    public static void createTestRecord(PrintWriter write, TestDoc testDoc, String methodName) {
         write.println();
         write.println(Header.secondLevelHeader(methodName));
         write.println();
         write.println(TextStyle.boldText("Description:") + " " + testDoc.description().value());
         write.println();
-        write.println(TextStyle.boldText("Steps:"));
+
+        if (testDoc.steps().length != 0) {
+            write.println(TextStyle.boldText("Steps:"));
+            write.println();
+            write.println(createTableOfSteps(testDoc.steps()));
+        }
+
+        if (testDoc.useCases().length != 0) {
+            write.println(TextStyle.boldText("Use-cases:"));
+            write.println();
+            write.println(TextList.createUnorderedList(createUseCases(testDoc.useCases())));
+        }
+    }
+
+    /**
+     * Creates a single record for a test-suite (test-class)
+     * The record contains: description, before tests execution steps, after tests execution steps, and use-cases obtained from the
+     * {@param suiteDoc}.
+     *
+     * @param write file writer
+     * @param suiteDoc annotation containing all @SuiteDoc objects, from which is the record generated
+     */
+    public static void createSuiteRecord(PrintWriter write, SuiteDoc suiteDoc) {
         write.println();
-        write.println(createTableOfSteps(testDoc.steps()));
-        write.println(TextStyle.boldText("Use-cases:"));
+        write.println(TextStyle.boldText("Description:") + " " + suiteDoc.description().value());
         write.println();
-        write.println(TextList.createUnorderedList(createUseCases(testDoc.usecases())));
+
+        if (suiteDoc.beforeTestSteps().length != 0) {
+            write.println(TextStyle.boldText("Before tests execution steps:"));
+            write.println();
+            write.println(createTableOfSteps(suiteDoc.beforeTestSteps()));
+        }
+
+        if (suiteDoc.afterTestSteps().length != 0) {
+            write.println(TextStyle.boldText("After tests execution steps:"));
+            write.println();
+            write.println(createTableOfSteps(suiteDoc.afterTestSteps()));
+        }
+
+        if (suiteDoc.useCases().length != 0) {
+            write.println(TextStyle.boldText("Use-cases:"));
+            write.println();
+            write.println(TextList.createUnorderedList(createUseCases(suiteDoc.useCases())));
+        }
+
+        write.println(Line.horizontalLine());
     }
 
     /**
@@ -108,7 +189,7 @@ public class DocGenerator {
      * @param steps list of steps of the test-case
      * @return String representation of table in Markdown
      */
-    private static String createTableOfSteps(TestDoc.Step[] steps) {
+    private static String createTableOfSteps(Step[] steps) {
         List<String> tableRows = new ArrayList<>();
         List<String> headers = List.of("Step", "Action", "Result");
 
@@ -124,7 +205,7 @@ public class DocGenerator {
      * @param usecases list of usecases from the {@link TestDoc} annotation
      * @return list of usecases in {@link List<String>}
      */
-    private static List<String> createUseCases(TestDoc.Usecase[] usecases) {
+    private static List<String> createUseCases(UseCase[] usecases) {
         List<String> usesText = new ArrayList<>();
         Arrays.stream(usecases).forEach(usecase -> usesText.add("`" + usecase.id() + "`"));
 
