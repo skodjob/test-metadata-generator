@@ -44,7 +44,7 @@ public @interface TestDoc {
      * Contact name of particular test-case
      * @return contact name in {@link Contact}
      */
-    Contact contact();
+    Contact contact() default @Contact(name = "", email = "");
 
     /**
      * Array of steps done in the test-case
@@ -60,7 +60,7 @@ public @interface TestDoc {
 
     /**
      * Array of tags describing the test-case
-     * @return array of tags in {@link Tag}
+     * @return array of tags in {@link TestTag}
      */
-    Tag[] tags() default {};
+    TestTag[] tags() default {};
 }

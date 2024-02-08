@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  * Interface for setting tag inside the {@link TestDoc} annotation
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Tag {
+public @interface TestTag {
     /**
      * Tag of the test-case stored inside `value` field
      * @return tag in String

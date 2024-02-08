@@ -8,8 +8,8 @@ import io.skodjob.annotations.Contact;
 import io.skodjob.annotations.Desc;
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.SuiteDoc;
-import io.skodjob.annotations.Tag;
 import io.skodjob.annotations.TestDoc;
+import io.skodjob.annotations.TestTag;
 import io.skodjob.annotations.UseCase;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,6 @@ public class DocGeneratorTest {
 
     @SuiteDoc(
         description = @Desc("My test suite containing various tests"),
-        contact = @Contact("Jakub Stejskal"),
         beforeTestSteps = {
             @Step(value = "Deploy uber operator across all namespaces, with custom configuration", expected = "Uber operator is deployed"),
             @Step(value = "Deploy management Pod for accessing all other Pods", expected = "Management Pod is deployed")
@@ -46,15 +45,14 @@ public class DocGeneratorTest {
             @UseCase(id = "core")
         },
         tags = {
-            @Tag(value = "regression"),
-            @Tag(value = "clients")
+            @TestTag(value = "regression"),
+            @TestTag(value = "clients")
         }
     )
     public static class TestClass {
 
         @TestDoc(
             description = @Desc("Test checking that the application works as expected"),
-            contact = @Contact("Jakub Stejskal"),
             steps = {
                 @Step(value = "Create object instance", expected = "Instance of an object is created"),
                 @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
@@ -64,7 +62,7 @@ public class DocGeneratorTest {
                 @UseCase(id = "core")
             },
             tags = {
-                @Tag(value = "default")
+                @TestTag(value = "default")
             }
         )
         void testMethodOne() {
@@ -74,7 +72,7 @@ public class DocGeneratorTest {
         @TestDoc(
             description = @Desc("Test checking that the application works as expected. " +
                     "This is just a little bit longer line, nothing else."),
-            contact = @Contact("Jakub Stejskal"),
+            contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
             steps = {
                 @Step(value = "Create object instance", expected = "Instance of an object is created"),
                 @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
@@ -94,7 +92,7 @@ public class DocGeneratorTest {
         @TestDoc(
             description = @Desc("Test checking that the application works as expected. " +
                     "This is just a little bit longer line, nothing else."),
-            contact = @Contact("Jakub Stejskal")
+                contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io")
         )
         void testMethodThree() {
 
@@ -103,10 +101,10 @@ public class DocGeneratorTest {
         @TestDoc(
             description = @Desc("Test checking that the application works as expected. " +
                     "This is just a little bit longer line, nothing else."),
-            contact = @Contact("Jakub Stejskal"),
+                contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
             tags = {
-                @Tag(value = "default"),
-                @Tag(value = "regression"),
+                @TestTag(value = "default"),
+                @TestTag(value = "regression"),
             }
         )
         void testMethodFour() {

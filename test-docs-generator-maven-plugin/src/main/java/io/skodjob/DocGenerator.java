@@ -6,8 +6,8 @@ package io.skodjob;
 
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.SuiteDoc;
-import io.skodjob.annotations.Tag;
 import io.skodjob.annotations.TestDoc;
+import io.skodjob.annotations.TestTag;
 import io.skodjob.annotations.UseCase;
 import io.skodjob.markdown.Header;
 import io.skodjob.markdown.Line;
@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -133,8 +134,10 @@ public class DocGenerator {
         write.println();
         write.println(TextStyle.boldText("Description:") + " " + testDoc.description().value());
         write.println();
-        write.println(TextStyle.boldText("Contact:") + " `" + testDoc.contact().value() + "`");
-        write.println();
+        if (!Objects.equals(testDoc.contact().name(), "")) {
+            write.println(TextStyle.boldText("Contact:") + " `" + testDoc.contact().name() + " <" + testDoc.contact().email() + ">`");
+            write.println();
+        }
 
         if (testDoc.steps().length != 0) {
             write.println(TextStyle.boldText("Steps:"));
@@ -167,8 +170,10 @@ public class DocGenerator {
         write.println();
         write.println(TextStyle.boldText("Description:") + " " + suiteDoc.description().value());
         write.println();
-        write.println(TextStyle.boldText("Contact:") + " `" + suiteDoc.contact().value() + "`");
-        write.println();
+        if (!Objects.equals(suiteDoc.contact().name(), "")) {
+            write.println(TextStyle.boldText("Contact:") + " `" + suiteDoc.contact().name() + " <" + suiteDoc.contact().email() + ">`");
+            write.println();
+        }
 
         if (suiteDoc.beforeTestSteps().length != 0) {
             write.println(TextStyle.boldText("Before tests execution steps:"));
@@ -231,12 +236,12 @@ public class DocGenerator {
 
     /**
      * Creates list of tags for the particular test-case in format - `tag`
-     * @param tags list of tags from the {@link TestDoc} annotation
+     * @param testTags list of tags from the {@link TestDoc} annotation
      * @return list of tags in {@link List<String>}
      */
-    private static List<String> createTags(Tag[] tags) {
+    private static List<String> createTags(TestTag[] testTags) {
         List<String> usesText = new ArrayList<>();
-        Arrays.stream(tags).forEach(tag -> usesText.add("`" + tag.value() + "`"));
+        Arrays.stream(testTags).forEach(testTag -> usesText.add("`" + testTag.value() + "`"));
 
         return usesText;
     }

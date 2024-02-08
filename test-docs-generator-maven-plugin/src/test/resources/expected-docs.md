@@ -2,8 +2,6 @@
 
 **Description:** My test suite containing various tests
 
-**Contact:** `Jakub Stejskal`
-
 **Before tests execution steps:**
 
 | Step | Action | Result |
@@ -33,8 +31,6 @@
 
 **Description:** Test checking that the application works as expected
 
-**Contact:** `Jakub Stejskal`
-
 **Steps:**
 
 | Step | Action | Result |
@@ -56,7 +52,7 @@
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
 
-**Contact:** `Jakub Stejskal`
+**Contact:** `Jakub Stejskal <ja@kub.io>`
 
 **Steps:**
 
@@ -78,14 +74,14 @@
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
 
-**Contact:** `Jakub Stejskal`
+**Contact:** `Jakub Stejskal <ja@kub.io>`
 
 
 ## testMethodFour
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
 
-**Contact:** `Jakub Stejskal`
+**Contact:** `Jakub Stejskal <ja@kub.io>`
 
 **Tags:**
 

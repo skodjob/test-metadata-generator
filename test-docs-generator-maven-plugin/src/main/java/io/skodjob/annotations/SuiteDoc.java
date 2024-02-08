@@ -47,7 +47,7 @@ public @interface SuiteDoc {
      * Contact name of particular test-case
      * @return contact name in {@link Contact}
      */
-    Contact contact();
+    Contact contact() default @Contact(name = "", email = "");
 
     /**
      * Array of steps done before tests execution
@@ -69,7 +69,7 @@ public @interface SuiteDoc {
 
     /**
      * Array of tags describing the test-case
-     * @return array of tags in {@link Tag}
+     * @return array of tags in {@link TestTag}
      */
-    Tag[] tags() default {};
+    TestTag[] tags() default {};
 }
