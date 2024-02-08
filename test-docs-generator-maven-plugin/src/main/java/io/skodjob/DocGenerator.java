@@ -6,6 +6,7 @@ package io.skodjob;
 
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.SuiteDoc;
+import io.skodjob.annotations.Tag;
 import io.skodjob.annotations.TestDoc;
 import io.skodjob.annotations.UseCase;
 import io.skodjob.markdown.Header;
@@ -132,6 +133,8 @@ public class DocGenerator {
         write.println();
         write.println(TextStyle.boldText("Description:") + " " + testDoc.description().value());
         write.println();
+        write.println(TextStyle.boldText("Contact:") + " `" + testDoc.contact().value() + "`");
+        write.println();
 
         if (testDoc.steps().length != 0) {
             write.println(TextStyle.boldText("Steps:"));
@@ -143,6 +146,12 @@ public class DocGenerator {
             write.println(TextStyle.boldText("Use-cases:"));
             write.println();
             write.println(TextList.createUnorderedList(createUseCases(testDoc.useCases())));
+        }
+
+        if (testDoc.tags().length != 0) {
+            write.println(TextStyle.boldText("Tags:"));
+            write.println();
+            write.println(TextList.createUnorderedList(createTags(testDoc.tags())));
         }
     }
 
@@ -157,6 +166,8 @@ public class DocGenerator {
     public static void createSuiteRecord(PrintWriter write, SuiteDoc suiteDoc) {
         write.println();
         write.println(TextStyle.boldText("Description:") + " " + suiteDoc.description().value());
+        write.println();
+        write.println(TextStyle.boldText("Contact:") + " `" + suiteDoc.contact().value() + "`");
         write.println();
 
         if (suiteDoc.beforeTestSteps().length != 0) {
@@ -175,6 +186,12 @@ public class DocGenerator {
             write.println(TextStyle.boldText("Use-cases:"));
             write.println();
             write.println(TextList.createUnorderedList(createUseCases(suiteDoc.useCases())));
+        }
+
+        if (suiteDoc.tags().length != 0) {
+            write.println(TextStyle.boldText("Tags:"));
+            write.println();
+            write.println(TextList.createUnorderedList(createTags(suiteDoc.tags())));
         }
 
         write.println(Line.horizontalLine());
@@ -208,6 +225,18 @@ public class DocGenerator {
     private static List<String> createUseCases(UseCase[] usecases) {
         List<String> usesText = new ArrayList<>();
         Arrays.stream(usecases).forEach(usecase -> usesText.add("`" + usecase.id() + "`"));
+
+        return usesText;
+    }
+
+    /**
+     * Creates list of tags for the particular test-case in format - `tag`
+     * @param tags list of tags from the {@link TestDoc} annotation
+     * @return list of tags in {@link List<String>}
+     */
+    private static List<String> createTags(Tag[] tags) {
+        List<String> usesText = new ArrayList<>();
+        Arrays.stream(tags).forEach(tag -> usesText.add("`" + tag.value() + "`"));
 
         return usesText;
     }

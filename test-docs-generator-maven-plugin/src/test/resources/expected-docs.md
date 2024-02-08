@@ -2,6 +2,8 @@
 
 **Description:** My test suite containing various tests
 
+**Contact:** `Jakub Stejskal`
+
 **Before tests execution steps:**
 
 | Step | Action | Result |
@@ -20,11 +22,18 @@
 
 * `core`
 
+**Tags:**
+
+* `regression`
+* `clients`
+
 <hr style="border:1px solid">
 
 ## testMethodOne
 
 **Description:** Test checking that the application works as expected
+
+**Contact:** `Jakub Stejskal`
 
 **Steps:**
 
@@ -38,10 +47,16 @@
 
 * `core`
 
+**Tags:**
+
+* `default`
+
 
 ## testMethodTwo
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal`
 
 **Steps:**
 
@@ -62,4 +77,18 @@
 ## testMethodThree
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal`
+
+
+## testMethodFour
+
+**Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal`
+
+**Tags:**
+
+* `default`
+* `regression`
 

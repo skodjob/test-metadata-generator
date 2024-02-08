@@ -39,6 +39,13 @@ public @interface TestDoc {
      * @return description in {@link Desc}
      */
     Desc description();
+
+    /**
+     * Contact name of particular test-case
+     * @return contact name in {@link Contact}
+     */
+    Contact contact();
+
     /**
      * Array of steps done in the test-case
      * @return array of steps in {@link Step}
@@ -50,4 +57,10 @@ public @interface TestDoc {
      * @return array of use-cases in {@link UseCase}
      */
     UseCase[] useCases() default {};
+
+    /**
+     * Array of tags describing the test-case
+     * @return array of tags in {@link Tag}
+     */
+    Tag[] tags() default {};
 }
