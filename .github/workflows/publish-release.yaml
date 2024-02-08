@@ -29,7 +29,6 @@ jobs:
       - name: Publish to sonatype
         run: ./github/scripts/push-to-nexus.sh
         env:
-          MVN_ARGS: '-pl test-docs-generator-maven-plugin'
           BUILD_ENV: 'github-actions'
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}

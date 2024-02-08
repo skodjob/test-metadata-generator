@@ -7,7 +7,7 @@
     <groupId>io.skodjob</groupId>
     <artifactId>test-generator</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -73,8 +73,6 @@
         <maven.javadoc.version>3.4.1</maven.javadoc.version>
         <maven.assembly.version>3.4.2</maven.assembly.version>
         <maven.plugin.plugin.version>3.9.0</maven.plugin.plugin.version>
-        <!-- Skip publishing of this module -->
-        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencyManagement>
@@ -262,7 +260,7 @@
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <tarLongFileMode>posix</tarLongFileMode>
                                     <descriptors>
-                                        <descriptor>${project.artifactId}/src/main/assembly/dist.xml</descriptor>
+                                        <descriptor>test-docs-generator-maven-plugin/src/main/assembly/dist.xml</descriptor>
                                     </descriptors>
                                 </configuration>
                             </execution>

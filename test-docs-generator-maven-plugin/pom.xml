@@ -6,12 +6,12 @@
 
     <packaging>maven-plugin</packaging>
     <artifactId>test-docs-generator-maven-plugin</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <parent>
         <groupId>io.skodjob</groupId>
         <artifactId>test-generator</artifactId>
-        <version>0.0.3-SNAPSHOT</version>
+        <version>0.0.4-SNAPSHOT</version>
     </parent>
 
     <licenses>
@@ -67,9 +67,6 @@
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <junit.platform.version>1.10.2</junit.platform.version>
         <maven.surefire.version>3.1.2</maven.surefire.version>
-
-        <!-- Allow publishing of this module -->
-        <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <dependencies>
