@@ -4,10 +4,12 @@
  */
 package io.skodjob;
 
+import io.skodjob.annotations.Contact;
 import io.skodjob.annotations.Desc;
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.SuiteDoc;
 import io.skodjob.annotations.TestDoc;
+import io.skodjob.annotations.TestTag;
 import io.skodjob.annotations.UseCase;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +43,10 @@ public class DocGeneratorTest {
         },
         useCases = {
             @UseCase(id = "core")
+        },
+        tags = {
+            @TestTag(value = "regression"),
+            @TestTag(value = "clients")
         }
     )
     public static class TestClass {
@@ -54,6 +60,9 @@ public class DocGeneratorTest {
             },
             useCases = {
                 @UseCase(id = "core")
+            },
+            tags = {
+                @TestTag(value = "default")
             }
         )
         void testMethodOne() {
@@ -63,6 +72,7 @@ public class DocGeneratorTest {
         @TestDoc(
             description = @Desc("Test checking that the application works as expected. " +
                     "This is just a little bit longer line, nothing else."),
+            contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
             steps = {
                 @Step(value = "Create object instance", expected = "Instance of an object is created"),
                 @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
@@ -81,9 +91,23 @@ public class DocGeneratorTest {
 
         @TestDoc(
             description = @Desc("Test checking that the application works as expected. " +
-                    "This is just a little bit longer line, nothing else.")
+                    "This is just a little bit longer line, nothing else."),
+                contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io")
         )
         void testMethodThree() {
+
+        }
+
+        @TestDoc(
+            description = @Desc("Test checking that the application works as expected. " +
+                    "This is just a little bit longer line, nothing else."),
+                contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
+            tags = {
+                @TestTag(value = "default"),
+                @TestTag(value = "regression"),
+            }
+        )
+        void testMethodFour() {
 
         }
     }

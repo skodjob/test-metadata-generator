@@ -20,6 +20,11 @@
 
 * `core`
 
+**Tags:**
+
+* `regression`
+* `clients`
+
 <hr style="border:1px solid">
 
 ## testMethodOne
@@ -38,10 +43,16 @@
 
 * `core`
 
+**Tags:**
+
+* `default`
+
 
 ## testMethodTwo
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal <ja@kub.io>`
 
 **Steps:**
 
@@ -62,4 +73,18 @@
 ## testMethodThree
 
 **Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal <ja@kub.io>`
+
+
+## testMethodFour
+
+**Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal <ja@kub.io>`
+
+**Tags:**
+
+* `default`
+* `regression`
 

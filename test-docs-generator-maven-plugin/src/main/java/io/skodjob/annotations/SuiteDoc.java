@@ -44,6 +44,12 @@ public @interface SuiteDoc {
     Desc description();
 
     /**
+     * Contact name of particular test-case
+     * @return contact name in {@link Contact}
+     */
+    Contact contact() default @Contact(name = "", email = "");
+
+    /**
      * Array of steps done before tests execution
      * @return array of steps in {@link Step}
      */
@@ -60,4 +66,10 @@ public @interface SuiteDoc {
      * @return array of use-cases in {@link UseCase}
      */
     UseCase[] useCases() default {};
+
+    /**
+     * Array of tags describing the test-case
+     * @return array of tags in {@link TestTag}
+     */
+    TestTag[] tags() default {};
 }
