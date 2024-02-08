@@ -7,7 +7,7 @@
     <groupId>io.skodjob</groupId>
     <artifactId>test-generator</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -16,7 +16,7 @@
         </license>
     </licenses>
 
-    <name>Test Metadata Generator</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>Generates metadata for junit tests</description>
     <url>https://github.com/skodjob/test-metadata-generator</url>
 
@@ -49,23 +49,6 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-<!--        <snapshotRepository>-->
-<!--            <id>ossrh</id>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-<!--        </snapshotRepository>-->
-<!--        <repository>-->
-<!--            <id>ossrh</id>-->
-<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
-        <!-- This is just a temporary solution-->
-        <repository>
-            <id>github</id>
-            <name>GitHub Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator </url>
-        </repository>
-    </distributionManagement>
-
     <modules>
         <module>test-docs-generator-maven-plugin</module>
     </modules>
@@ -85,13 +68,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
         <maven.deploy.plugin.version>3.1.1</maven.deploy.plugin.version>
-        <maven.gpg.version>3.0.1</maven.gpg.version>
-        <sonatype.nexus.staging>1.6.7</sonatype.nexus.staging>
+        <maven.gpg.version>3.1.0</maven.gpg.version>
+        <sonatype.nexus.central>0.3.0</sonatype.nexus.central>
         <maven.javadoc.version>3.4.1</maven.javadoc.version>
         <maven.assembly.version>3.4.2</maven.assembly.version>
         <maven.plugin.plugin.version>3.9.0</maven.plugin.plugin.version>
-        <!-- Skip publishing of this module -->
-        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencyManagement>
@@ -103,6 +84,14 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -219,6 +208,8 @@
                 <gpg.executable>${env.GPG_EXECUTABLE}</gpg.executable>
                 <!--suppress UnresolvedMavenProperty -->
                 <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+                <!--suppress UnresolvedMavenProperty -->
+                <gpg.keyname>${env.GPG_KEYNAME}</gpg.keyname>
             </properties>
             <build>
                 <plugins>
@@ -229,7 +220,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>verify</phase>
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
@@ -244,14 +235,15 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${sonatype.nexus.staging}</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${sonatype.nexus.central}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
+                            <checksums>all</checksums>
+                            <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -268,7 +260,7 @@
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <tarLongFileMode>posix</tarLongFileMode>
                                     <descriptors>
-                                        <descriptor>src/main/assembly/dist.xml</descriptor>
+                                        <descriptor>test-docs-generator-maven-plugin/src/main/assembly/dist.xml</descriptor>
                                     </descriptors>
                                 </configuration>
                             </execution>
