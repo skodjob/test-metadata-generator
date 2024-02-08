@@ -6,12 +6,12 @@
 
     <packaging>maven-plugin</packaging>
     <artifactId>test-docs-generator-maven-plugin</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <parent>
         <groupId>io.skodjob</groupId>
         <artifactId>test-generator</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <licenses>
