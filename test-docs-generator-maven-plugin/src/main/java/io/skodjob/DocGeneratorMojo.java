@@ -4,6 +4,7 @@
  */
 package io.skodjob;
 
+import io.skodjob.common.Utils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -19,9 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Map;
-
-import static io.skodjob.DocGenerator.generate;
-import static io.skodjob.DocGenerator.getTestClassesWithTheirPath;
 
 /**
  * DocGeneratorMojo class for Maven plugin handling
@@ -44,6 +42,12 @@ public class DocGeneratorMojo extends AbstractMojo {
      */
     @Parameter(property = "generatePath", defaultValue = "./test-docs", required = true, readonly = true)
     String generatePath;
+
+    /**
+     * Option for generating fmf
+     */
+    @Parameter(property = "generateFmf", defaultValue = "false", readonly = true)
+    boolean generateFmf;
 
     /**
      * Pointer to Maven project
@@ -91,12 +95,18 @@ public class DocGeneratorMojo extends AbstractMojo {
             getLog().debug(url.getFile());
         }
 
-        Map<String, String> classes = getTestClassesWithTheirPath(filePath, generatePath);
+        Map<String, String> classes = Utils.getTestClassesWithTheirPath(filePath, generatePath);
 
         for (Map.Entry<String, String> entry : classes.entrySet()) {
             try {
                 Class<?> testClass = classRealm.loadClass(entry.getValue());
-                generate(testClass, entry.getKey() + ".md");
+                MdGenerator.generate(testClass, entry.getKey() + ".md");
+                if (generateFmf) {
+                    FmfGenerator.generate(testClass, entry.getKey() + ".fmf");
+                } else {
+                    getLog().info("Skipping fmf generation");
+                }
+
             } catch (ClassNotFoundException | IOException ex) {
                 getLog().warn(String.format("Cannot load %s", entry.getValue()));
                 getLog().error(ex);

@@ -9,36 +9,27 @@ import io.skodjob.annotations.SuiteDoc;
 import io.skodjob.annotations.TestDoc;
 import io.skodjob.annotations.TestTag;
 import io.skodjob.annotations.UseCase;
+import io.skodjob.common.Utils;
 import io.skodjob.markdown.Header;
 import io.skodjob.markdown.Line;
 import io.skodjob.markdown.Table;
 import io.skodjob.markdown.TextList;
 import io.skodjob.markdown.TextStyle;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
- * Main Test Docs Generator class of the module
- * The DocGenerator generates Markdown files for each documented test-case inside the test-class
+ * The MdGenerator generates Markdown files for each documented test-case inside the test-class
  * For each test-class is created separate Markdown file - with the same name as the test-class
  * All needed information is parsed from the particular @TestDoc annotation.
  */
-public class DocGenerator {
-    private static final Pattern REMOVE_BEFORE_PACKAGE = Pattern.compile(".*java\\/");
+public class MdGenerator {
 
     /**
      * Method that generates test documentation of the specified test-class.
@@ -59,7 +50,7 @@ public class DocGenerator {
             .toList();
 
         if (suiteDoc != null || !methods.isEmpty()) {
-            PrintWriter printWriter = createFilesForTestClass(classFilePath);
+            PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);
 
             // creating first level header for the test-suite
             printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
@@ -69,27 +60,6 @@ public class DocGenerator {
 
             printWriter.close();
         }
-    }
-
-    /**
-     * Creates needed files and folders for the particular test-suite (test-class)
-     * @param classFilePath path where the test-suite (test-class) is present
-     * @return file writer
-     * @throws IOException during file creation
-     */
-    private static PrintWriter createFilesForTestClass(String classFilePath) throws IOException {
-        String fileName = classFilePath.substring(classFilePath.lastIndexOf('/') + 1);
-        String parentPath = classFilePath.replace(fileName, "");
-
-        final File parent = new File(parentPath);
-        if (!parent.mkdirs()) {
-            System.err.println("Could not create parent directories ");
-        }
-        final File classFile = new File(parent, fileName);
-        classFile.createNewFile();
-
-        FileWriter write = new FileWriter(classFile);
-        return new PrintWriter(write);
     }
 
     /**
@@ -244,61 +214,5 @@ public class DocGenerator {
         Arrays.stream(testTags).forEach(testTag -> usesText.add("`" + testTag.value() + "`"));
 
         return usesText;
-    }
-
-    /**
-     * On specified {@param filePath} lists all classes and returns them in Map, where key is target
-     * path, where the Markdown file will be created, and value is package with class name available
-     * on classpath
-     * Also excludes files that should not be considered for documentation (currently just "AbstractST")
-     * @param filePath path where are all test-classes present
-     * @param generatePath "prefix" path where the documentation should be generated into
-     * @return Map with test-classes info from the {@param filePath}
-     */
-    static Map<String, String> getTestClassesWithTheirPath(String filePath, String generatePath) {
-        Map<String, String> classes = new HashMap<>();
-
-        try {
-            Files.list(Paths.get(filePath))
-                .filter(file -> !file.getFileName().toString().contains("AbstractST"))
-                .forEach(path -> classes.putAll(getClassesForPackage(classes, path, generatePath)));
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        return classes;
-    }
-
-    /**
-     * Updates Map ({@param classes}) with info about classes inside {@param packagePath}.
-     * It goes through all files inside the {@param packagePath} and does two things:
-     * - in case that file is directory (another package), it recursively calls itself and adds all info needed for all files
-     *   inside the directory
-     * - otherwise adds key/value record in the map
-     *      - key -> path in which the particular `.md` file will be generated, typically {@param generatePath}/{@code classPackagePath}
-     *          - f.e. -> ./test-docs/path/to/my/package/TestClassST
- *          - value -> path for the particular test class -> in package format, available on classpath
-     *          - f.e. -> path.to.my.package.TestClassST
-     * @param classes Map that should be updated with test-classes info
-     * @param packagePath path on which the files and classes should be listed
-     * @param generatePath "prefix" path where the documentation should be generated into
-     * @return updated Map with test-classes info from the {@param packagePath}
-     */
-    private static Map<String, String> getClassesForPackage(Map<String, String> classes, Path packagePath, String generatePath) {
-        try {
-            Files.list(packagePath)
-                .forEach(path -> {
-                    if (Files.isDirectory(path)) {
-                        classes.putAll(getClassesForPackage(classes, path, generatePath));
-                    } else {
-                        String classPackagePath = path.toAbsolutePath().toString().replaceAll(REMOVE_BEFORE_PACKAGE.toString(), "").replace(".java", "");
-                        classes.put(generatePath + classPackagePath, classPackagePath.replaceAll("/", "."));
-                    }
-                });
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        return classes;
     }
 }

@@ -21,12 +21,12 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DocGeneratorTest {
+public class MdGeneratorTest {
     @Test
     void testCreateTableOfSteps() throws IOException {
-        String expectedFilePath = DocGeneratorTest.class.getClassLoader().getResource("expected-docs.md").getPath();
+        String expectedFilePath = MdGeneratorTest.class.getClassLoader().getResource("expected-docs.md").getPath();
         String generatedFilePath = "target/io/test.md";
-        DocGenerator.generate(TestClass.class, generatedFilePath);
+        MdGenerator.generate(TestClass.class, generatedFilePath);
 
         assertThat(compareFiles(expectedFilePath, generatedFilePath), is(true));
     }
