@@ -69,7 +69,6 @@ public class Utils {
 
         try {
             Files.list(Paths.get(filePath))
-                    .filter(file -> !file.getFileName().toString().contains("AbstractST"))
                     .forEach(path -> classes.putAll(getClassesForPackage(classes, path, generatePath)));
         } catch (IOException exception) {
             throw new RuntimeException(exception);
