@@ -16,7 +16,7 @@ public class FmfGeneratorTest {
     void testCreateTableOfSteps() throws IOException {
         String expectedFilePath = FmfGeneratorTest.class.getClassLoader().getResource("expected-docs.fmf").getPath();
         String generatedFilePath = "target/io/test.fmf";
-        FmfGenerator.generate(MdGeneratorTest.TestClass.class, generatedFilePath);
+        FmfGenerator.generate(MdGeneratorTest.DummyTest.class, generatedFilePath);
 
         assertThat(MdGeneratorTest.compareFiles(expectedFilePath, generatedFilePath), is(true));
     }

@@ -26,7 +26,7 @@ public class MdGeneratorTest {
     void testCreateTableOfSteps() throws IOException {
         String expectedFilePath = MdGeneratorTest.class.getClassLoader().getResource("expected-docs.md").getPath();
         String generatedFilePath = "target/io/test.md";
-        MdGenerator.generate(TestClass.class, generatedFilePath);
+        MdGenerator.generate(DummyTest.class, generatedFilePath);
 
         assertThat(compareFiles(expectedFilePath, generatedFilePath), is(true));
     }
@@ -49,7 +49,7 @@ public class MdGeneratorTest {
             @TestTag(value = "clients")
         }
     )
-    public static class TestClass {
+    public static class DummyTest {
 
         @TestDoc(
             description = @Desc("Test checking that the application works as expected"),

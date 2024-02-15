@@ -1,4 +1,4 @@
-# TestClass
+# DummyTest
 
 **Description:** My test suite containing various tests
 
