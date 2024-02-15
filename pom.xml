@@ -51,6 +51,7 @@
 
     <modules>
         <module>test-docs-generator-maven-plugin</module>
+        <module>dummy-module</module>
     </modules>
 
     <properties>

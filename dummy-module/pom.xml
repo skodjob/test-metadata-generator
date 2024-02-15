@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <packaging>jar</packaging>
+    <artifactId>dummy-module</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
+
+    <parent>
+        <groupId>io.skodjob</groupId>
+        <artifactId>test-generator</artifactId>
+        <version>0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Dummy module</description>
+    <url>https://github.com/skodjob/test-metadata-generator</url>
+
+    <scm>
+        <connection>scm:git:git:/github.com/skodjob/test-metadata-generator.git</connection>
+        <developerConnection>scm:git:ssh://github.com/skodjob/test-metadata-generator.git</developerConnection>
+        <url>https://github.com/skodjob/test-metadata-generator</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/skodjob/test-metadata-generator/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>im-konge</id>
+            <name>Lukáš Král</name>
+            <email>lukywill16@gmail.com</email>
+        </developer>
+        <developer>
+            <id>kornys</id>
+            <name>David Kornel</name>
+            <email>kornys@outlook.com</email>
+        </developer>
+        <developer>
+            <id>Frawless</id>
+            <name>Jakub Stejskal</name>
+            <email>xstejs24@gmail.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Skip publishing of this module -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <generator.version>0.0.4-SNAPSHOT</generator.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.skodjob</groupId>
+            <artifactId>test-docs-generator-maven-plugin</artifactId>
+            <version>${generator.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.skodjob</groupId>
+                <artifactId>test-docs-generator-maven-plugin</artifactId>
+                <version>${generator.version}</version>
+                <executions>
+                    <execution>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>test-docs-generator</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filePath>./dummy-module/src/test/java/io/</filePath>
+                    <generatePath>./docs/</generatePath>
+                    <generateFmf>true</generateFmf>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
