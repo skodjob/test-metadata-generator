@@ -1,4 +1,4 @@
-# TestClass
+# DummyTest
 
 **Description:** My test suite containing various tests
 
@@ -27,6 +27,18 @@
 
 <hr style="border:1px solid">
 
+## testMethodFour
+
+**Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal <ja@kub.io>`
+
+**Tags:**
+
+* `default`
+* `regression`
+
+
 ## testMethodOne
 
 **Description:** Test checking that the application works as expected
@@ -46,6 +58,13 @@
 **Tags:**
 
 * `default`
+
+
+## testMethodThree
+
+**Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
+
+**Contact:** `Jakub Stejskal <ja@kub.io>`
 
 
 ## testMethodTwo
@@ -68,23 +87,4 @@
 * `core`
 * `core+`
 * `core+++`
-
-
-## testMethodThree
-
-**Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
-
-**Contact:** `Jakub Stejskal <ja@kub.io>`
-
-
-## testMethodFour
-
-**Description:** Test checking that the application works as expected. This is just a little bit longer line, nothing else.
-
-**Contact:** `Jakub Stejskal <ja@kub.io>`
-
-**Tags:**
-
-* `default`
-* `regression`
 

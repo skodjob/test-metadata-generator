@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +48,7 @@ public class MdGenerator {
 
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
-            .toList();
+            .sorted(Comparator.comparing(Method::getName)).toList();
 
         if (suiteDoc != null || !methods.isEmpty()) {
             PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);

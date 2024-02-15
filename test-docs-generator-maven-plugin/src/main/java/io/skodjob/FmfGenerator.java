@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class FmfGenerator {
     public static void generate(Class<?> testClass, String classFilePath) throws IOException {
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
-            .toList();
+            .sorted(Comparator.comparing(Method::getName)).toList();
 
         if (!methods.isEmpty()) {
             PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);
