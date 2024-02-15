@@ -48,7 +48,7 @@ public class MdGenerator {
 
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
-            .sorted(Comparator.comparingInt(Method::getModifiers)).toList();
+            .sorted(Comparator.comparing(Method::getName)).toList();
 
         if (suiteDoc != null || !methods.isEmpty()) {
             PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);

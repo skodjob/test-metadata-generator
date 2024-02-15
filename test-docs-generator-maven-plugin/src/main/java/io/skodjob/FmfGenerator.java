@@ -44,7 +44,7 @@ public class FmfGenerator {
     public static void generate(Class<?> testClass, String classFilePath) throws IOException {
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
-            .sorted(Comparator.comparingInt(Method::getModifiers)).toList();
+            .sorted(Comparator.comparing(Method::getName)).toList();
 
         if (!methods.isEmpty()) {
             PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);
