@@ -1,8 +1,8 @@
-# Test documentation generator
+# Test Documentation Generator
 
-It is a maven-plugin that delivers a set of annotation for your test code. 
+Test Documentation Generator is a maven-plugin that delivers a set of annotation for your test code. 
 You can annotate your test classes and test methods and provide details about test scenario.
-Plugin itself then parse the data from the annotations and generates `markdown` files for readable documentation and `fmf` format metadata for automated reporting of the test cases to external systems.
+Plugin itself then parse the data from the annotations and generates `Markdown` files for readable documentation and `fmf` format metadata for automated reporting of the test cases to external systems.
 
 ## Using the annotations
 
@@ -10,7 +10,7 @@ Plugin itself then parse the data from the annotations and generates `markdown` 
 
 To generate documentation of the test class, you can use the following annotations:
 
-* `@SuiteDoc` - is the main annotation, which consists all other annotation and should be used right above the method.
+* `@SuiteDoc` - is the main annotation, which consists of all other annotation and should be used right above the method.
   It contains three fields - `description`, `steps`, and `usecases`, that are set using other annotations.
 * `@Desc` - overall description of the test, it can contain anything.
 * `@Contact` - contact info with fields `name` and `email`.
@@ -92,7 +92,7 @@ For every commit we also publish `-SNAPSHOT` version to GitHub [packages](https:
 
 ### Usage
 
-You can just simply add it to your pom file together with `maven-dependency-plugin` for building the dependencies of the test classes:
+To start using the plugin, you will need to add it to your pom file together with `maven-dependency-plugin` for building the dependencies of the test classes:
 
 ```xml
     <plugin>
@@ -132,17 +132,17 @@ You can just simply add it to your pom file together with `maven-dependency-plug
 `maven-dependency-plugin` is needed for proper loading the classes. 
 Without it the plugin will return `NoClassDefFound` exception and will fail.
 
-### Accepted Parameters
+#### Accepted Parameters
 
 Plugin works with the following parameters:
 * `filePath` - path to the built classes, from where all the names of the tests are taken.
 * `generatePath` - path to the place where the documentation should be generated.
-* `generateFmf` - boolean value whether generator should generate also fmf metadata or just md.
+* `generateFmf` - boolean value whether generator should generate also `fmf` metadata or just `Markdown`.
 
 
-## Use SNAPSHOT version
+### Use SNAPSHOT version
 
-TO use `-SNAPSHOT` versions you have to have the plugin built on your local environment or use GitHub packages for a dependency resolution.
+To use `-SNAPSHOT` versions you have to have the plugin built on your local environment or use GitHub packages for a dependency resolution.
 
 You can for example create the following `setting.xml`:
 ```xml
