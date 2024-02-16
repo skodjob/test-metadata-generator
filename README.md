@@ -1,60 +1,172 @@
-# Test documentation generator
+# Test Documentation Generator
 
-TODO
+Test Documentation Generator is a maven-plugin that delivers a set of annotation for your test code. 
+You can annotate your test classes and test methods and provide details about test scenario.
+Plugin itself then parse the data from the annotations and generates `Markdown` files for readable documentation and `fmf` format metadata for automated reporting of the test cases to external systems.
 
-## Annotating the tests
+## Using the annotations
 
-To generate documentation of the test, you can use the following annotations:
+### Test class usage
 
-* `@TestDoc` - is the main annotation, which consists all other annotation and should be used right above the method.
+To generate documentation of the test class, you can use the following annotations:
+
+* `@SuiteDoc` - is the main annotation, which consists of all other annotation and should be used right above the method.
   It contains three fields - `description`, `steps`, and `usecases`, that are set using other annotations.
-* `@Desc` - overall description of the test, it can contain anything
+* `@Desc` - overall description of the test, it can contain anything.
+* `@Contact` - contact info with fields `name` and `email`.
 * `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
   is for the expected result of the step.
 * `@Usecase` - one of the use-cases that the test is testing.
+* `@TestTag` - specific tag for the test class.
 
 Example of how the test can be annotated:
 ```java
-    @TestDoc(
-        description = @Desc("Test checking that the application works as expected"),
-        steps = {
-            @Step(value = "Create object instance", expected = "Instance of an object is created"),
-            @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
-            @Step(value = "Clean up the test case", expected = "Everything is cleared")
+    @SuiteDoc(
+        description = @Desc("My test suite containing various tests"),
+        contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
+        beforeTestSteps = {
+                @Step(value = "Deploy uber operator across all namespaces, with custom configuration", expected = "Uber operator is deployed"),
+                @Step(value = "Deploy management Pod for accessing all other Pods", expected = "Management Pod is deployed")
         },
-        usecases = {
-            @Usecase(id = "core")
+        afterTestSteps = {
+                @Step(value = "Delete management Pod", expected = "Management Pod is deleted"),
+                @Step(value = "Delete uber operator", expected = "Uber operator is deleted")
+        },
+        useCases = {
+                @UseCase(id = "core")
+        },
+        tags = {
+                @TestTag(value = "regression"),
+                @TestTag(value = "clients")
+        }
+    )
+    public static class DummyTest {
+        // ...
+    }
+```
+
+### Test method usage
+
+To generate documentation of the test method, you can use the following annotations:
+
+* `@TestDoc` - is the main annotation, which consists all other annotation and should be used right above the method.
+  It contains three fields - `description`, `steps`, and `usecases`, that are set using other annotations.
+* `@Desc` - overall description of the test, it can contain anything.
+* `@Contact` - contact info with fields `name` and `email`.
+* `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
+  is for the expected result of the step.
+* `@Usecase` - one of the use-cases that the test is testing.
+* `@TestTag` - specific tag for the test class.
+
+Example of how the test can be annotated:
+```java
+        @TestDoc(
+        description = @Desc("Test checking that the application works as expected."),
+        contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
+        steps = {
+                @Step(value = "Create object instance", expected = "Instance of an object is created"),
+                @Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
+                @Step(value = "Clean up the test case", expected = "Everything is cleared"),
+                @Step(value = "Do a magic cleanup check", expected = "Everything magically work")
+        },
+        useCases = {
+                @UseCase(id = "core"),
+                @UseCase(id = "core+"),
+                @UseCase(id = "core+++")
+        },
+        tags = {
+                @TestTag(value = "default"),
+                @TestTag(value = "regression"),
         }
     )
     void testMyCode(ExtensionContext extensionContext) {
+        // ...
     }
 ```
 
 ## Generating the documentation
 
-The `DocGenerator` needs to have all dependencies built before it is executed.
-That can be done using:
-```bash
-mvn clean install -DskipTests
+The generation is handled by maven-plugin that is available at [Maven central](https://central.sonatype.com/artifact/io.skodjob/test-docs-generator-maven-plugin/overview).
+All released versions could be found there. 
+For every commit we also publish `-SNAPSHOT` version to GitHub [packages](https://github.com/skodjob/test-metadata-generator/packages/2061096).
+
+### Usage
+
+To start using the plugin, you will need to add it to your pom file together with `maven-dependency-plugin` for building the dependencies of the test classes:
+
+```xml
+    <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+            <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    <plugin>
+        <groupId>io.skodjob</groupId>
+        <artifactId>test-docs-generator-maven-plugin</artifactId>
+        <version>${generator.version}</version>
+        <executions>
+            <execution>
+                <phase>post-integration-test</phase>
+                <goals>
+                    <goal>test-docs-generator</goal>
+                </goals>
+            </execution>
+        </executions>
+        <configuration>
+            <filePath>./dummy-module/src/test/java/io/</filePath>
+            <generatePath>./docs/</generatePath>
+            <generateFmf>true</generateFmf>
+        </configuration>
+    </plugin>
 ```
-from the root directory of the project.
 
-After that, the generator can be executed using the following command:
-```bash
-java -classpath ../systemtest/target/lib/\*:../systemtest/target/test-classes:../systemtest/target/systemtest-<RELEASE-VERSION>.jar \
-io.strimzi.systemtestdoc.DocGenerator --filePath ../systemtest/src/test/java/io/strimzi/systemtest --generatePath ./documentation/
+`maven-dependency-plugin` is needed for proper loading the classes. 
+Without it the plugin will return `NoClassDefFound` exception and will fail.
+
+#### Accepted Parameters
+
+Plugin works with the following parameters:
+* `filePath` - path to the built classes, from where all the names of the tests are taken.
+* `generatePath` - path to the place where the documentation should be generated.
+* `generateFmf` - boolean value whether generator should generate also `fmf` metadata or just `Markdown`.
+
+
+### Use SNAPSHOT version
+
+To use `-SNAPSHOT` versions you have to have the plugin built on your local environment or use GitHub packages for a dependency resolution.
+
+You can for example create the following `setting.xml`:
+```xml
+<settings>
+    <servers>
+        <server>
+            <id>github</id>
+            <username>x-access-token</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+    <pluginGroups>
+        <pluginGroup>io.skodjob</pluginGroup>
+    </pluginGroups>
+</settings>
 ```
 
-The generator accepts two arguments:
-
-* `--filePath` - path to the built classes, from where all the names of the tests are taken
-* `--generatePath` - path to the place where the documentation should be generated
-
-Or you can use the `make` command from the repository root:
-```bash
-make generate-docs -C systemtest-doc
-```
-To remove the generated documentation, you can use:
-```bash
-make clean-docs -C systemtest-doc
+And specify GitHub in your pom:
+```xml
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/skodjob/test-metadata-generator</url>
+        </repository>
+    </repositories>
 ```
