@@ -16,13 +16,20 @@ import io.skodjob.markdown.Table;
 import io.skodjob.markdown.TextList;
 import io.skodjob.markdown.TextStyle;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -32,11 +39,13 @@ import java.util.Objects;
  */
 public class MdGenerator {
 
+    private static Map<String, Map<String, String>> usecasesMap = new HashMap<>();
+
     /**
      * Method that generates test documentation of the specified test-class.
      * Lists all methods (test-cases) annotated by {@link TestDoc} inside the {@param testClass}, creates
      * parent folders (if needed), new Markdown file for the class, and after that generates test-suite documentation using
-     * {@link #createSuiteRecord(PrintWriter, SuiteDoc)} and then test-cases documentation using {@link #createTestRecord(PrintWriter, TestDoc, String)},
+     * {@link #createSuiteRecord(PrintWriter, SuiteDoc)} and then test-cases documentation using {@link #createTestRecord(PrintWriter, TestDoc, String, String)},
      * all written inside the newly created Markdown file.
      *
      * @param testClass for which the Markdown file is created and test-cases are documented
@@ -57,7 +66,7 @@ public class MdGenerator {
             printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
 
             generateDocumentationForTestSuite(printWriter, suiteDoc);
-            generateDocumentationForTestCases(printWriter, methods);
+            generateDocumentationForTestCases(printWriter, classFilePath, methods);
 
             printWriter.close();
         }
@@ -79,12 +88,13 @@ public class MdGenerator {
      * @param writer file writer
      * @param methods containing {@link TestDoc} annotation
      */
-    private static void generateDocumentationForTestCases(PrintWriter writer, List<Method> methods) {
+    private static void generateDocumentationForTestCases(PrintWriter writer, String classFilePath, List<Method> methods) {
+
         if (!methods.isEmpty()) {
             methods.forEach(method -> {
                 TestDoc testDoc = method.getAnnotation(TestDoc.class);
                 if (testDoc != null) {
-                    createTestRecord(writer, testDoc, method.getName());
+                    createTestRecord(writer, testDoc, classFilePath, method.getName());
                 }
             });
         }
@@ -97,9 +107,10 @@ public class MdGenerator {
      *
      * @param write file writer
      * @param testDoc annotation containing all @TestDoc objects, from which is the record generated
+     * @param classFilePath path to generated class file doc
      * @param methodName name of the test-case containing {@param testDoc}
      */
-    public static void createTestRecord(PrintWriter write, TestDoc testDoc, String methodName) {
+    public static void createTestRecord(PrintWriter write, TestDoc testDoc, String classFilePath, String methodName) {
         write.println();
         write.println(Header.secondLevelHeader(methodName));
         write.println();
@@ -119,7 +130,19 @@ public class MdGenerator {
         if (testDoc.useCases().length != 0) {
             write.println(TextStyle.boldText("Use-cases:"));
             write.println();
-            write.println(TextList.createUnorderedList(createUseCases(testDoc.useCases())));
+
+            List<String> usecases = createUseCases(testDoc.useCases());
+            write.println(TextList.createUnorderedList(usecases));
+            usecases.forEach(usecase -> {
+                // Get the existing list or create a new one if the key doesn't exist
+                String useCasePure = usecase.replace("`", "");
+                Map<String, String> existingMap = usecasesMap.getOrDefault(useCasePure, new HashMap<>());
+                // Add the new value to the list
+                existingMap.put(methodName, classFilePath);
+
+                // Put the updated list back into the map
+                usecasesMap.put(useCasePure, existingMap);
+            });
         }
 
         if (testDoc.tags().length != 0) {
@@ -215,5 +238,55 @@ public class MdGenerator {
         Arrays.stream(testTags).forEach(testTag -> usesText.add("`" + testTag.value() + "`"));
 
         return usesText;
+    }
+
+    /**
+     * Update usecase file that is available in the docs dir
+     * @param usecaseFilePath path to usecase file within docs dir
+     * @param updatedData data that will be put into the file
+     */
+    public static void updateUsacaseFile(String usecaseFilePath, String updatedData) {
+        try {
+            File markdownFile = new File(usecaseFilePath);
+            StringBuilder fileContent = new StringBuilder();
+            boolean foundGeneratedPart = false;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(markdownFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("<!-- generated part -->")) {
+                        foundGeneratedPart = true;
+                        fileContent.append(line).append("\n");
+                        break;
+                    }
+                    fileContent.append(line).append("\n");
+                }
+            }
+
+            if (foundGeneratedPart) {
+                // Append the new content
+                fileContent.append(updatedData).append("\n");
+
+                // Write the updated content back to the file
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
+                    writer.write(fileContent.toString());
+                }
+
+                System.out.println("Content updated successfully!");
+            } else {
+                System.out.println("Error: <!-- generated part --> not found in the file.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get usecases map
+     * @return usescases map
+     */
+    public static Map<String, Map<String, String>> getUsecasesMap() {
+        System.out.println(usecasesMap);
+        return usecasesMap;
     }
 }

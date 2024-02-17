@@ -35,17 +35,16 @@ public class Utils {
      *          - f.e. -> path.to.my.package.TestClassST
      * @param classes Map that should be updated with test-classes info
      * @param packagePath path on which the files and classes should be listed
-     * @param generatePath "prefix" path where the documentation should be generated into
      * @return updated Map with test-classes info from the {@param packagePath}
      */
-    private static Map<String, String> getClassesForPackage(Map<String, String> classes, Path packagePath, String generatePath) {
+    private static Map<String, String> getClassesForPackage(Map<String, String> classes, Path packagePath) {
         try (Stream<Path> pathStream = Files.list(packagePath)) {
             pathStream.forEach(path -> {
                 if (Files.isDirectory(path)) {
-                    classes.putAll(getClassesForPackage(classes, path, generatePath));
+                    classes.putAll(getClassesForPackage(classes, path));
                 } else {
                     String classPackagePath = path.toAbsolutePath().toString().replaceAll(REMOVE_BEFORE_PACKAGE.toString(), "").replace(".java", "");
-                    classes.put(generatePath + classPackagePath, classPackagePath.replaceAll("/", "."));
+                    classes.put(classPackagePath, classPackagePath.replaceAll("/", "."));
                 }
             });
         } catch (IOException e) {
@@ -62,14 +61,13 @@ public class Utils {
      * on classpath
      * Also excludes files that should not be considered for documentation (currently just "AbstractST")
      * @param filePath path where are all test-classes present
-     * @param generatePath "prefix" path where the documentation should be generated into
      * @return Map with test-classes info from the {@param filePath}
      */
-    public static Map<String, String> getTestClassesWithTheirPath(String filePath, String generatePath) {
+    public static Map<String, String> getTestClassesWithTheirPath(String filePath) {
         Map<String, String> classes = new HashMap<>();
 
         try (Stream<Path> pathStream = Files.list(Paths.get(filePath))) {
-            pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path, generatePath)));
+            pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path)));
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,14 +35,14 @@ public class DocGeneratorMojo extends AbstractMojo {
     /**
      * Path where are all test-classes stored
      */
-    @Parameter(property = "filePath", defaultValue = "./test", required = true, readonly = true)
-    String filePath;
+    @Parameter(property = "testsPath", defaultValue = "./test", required = true, readonly = true)
+    String testsPath;
 
     /**
      * Path where the test documentation should be generated to
      */
-    @Parameter(property = "generatePath", defaultValue = "./test-docs", required = true, readonly = true)
-    String generatePath;
+    @Parameter(property = "docsPath", defaultValue = "./test-docs", required = true, readonly = true)
+    String docsPath;
 
     /**
      * Option for generating fmf
@@ -66,8 +67,8 @@ public class DocGeneratorMojo extends AbstractMojo {
     /**
      * Method for the execution of the test-docs-generator Maven plugin
      * Generates documentation of test-cases based on specified parameters:
-     *  - {@link #filePath}
-     *  - {@link #generatePath}
+     *  - {@link #testsPath}
+     *  - {@link #docsPath}
      *  - {@link #project}
      *  - {@link #descriptor}
      */
@@ -94,15 +95,16 @@ public class DocGeneratorMojo extends AbstractMojo {
         for (URL url : classRealm.getURLs()) {
             getLog().debug(url.getFile());
         }
+        getLog().info("testsPath: " + testsPath);
 
-        Map<String, String> classes = Utils.getTestClassesWithTheirPath(filePath, generatePath);
+        Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath);
 
         for (Map.Entry<String, String> entry : classes.entrySet()) {
             try {
                 Class<?> testClass = classRealm.loadClass(entry.getValue());
-                MdGenerator.generate(testClass, entry.getKey() + ".md");
+                MdGenerator.generate(testClass,  docsPath + "md/" + entry.getKey() + ".md");
                 if (generateFmf) {
-                    FmfGenerator.generate(testClass, entry.getKey() + ".fmf");
+                    FmfGenerator.generate(testClass, docsPath + "fmf/" + entry.getKey() + ".fmf");
                 } else {
                     getLog().info("Skipping fmf generation");
                 }
@@ -110,6 +112,29 @@ public class DocGeneratorMojo extends AbstractMojo {
             } catch (ClassNotFoundException | IOException ex) {
                 getLog().warn(String.format("Cannot load %s", entry.getValue()));
                 getLog().error(ex);
+            }
+        }
+
+        // TODO - check if usecases path exists based on passed docs dir
+        // Then go through all files and find corresponding data in map
+        // How to deal with links in tests docs? :O
+        String usecasesPath = docsPath + "/usecases/";
+        getLog().info("usecasesPath: " + usecasesPath);
+        if (Files.exists(new File(usecasesPath).toPath())) {
+            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.getUsecasesMap().entrySet()) {
+                String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
+
+                if (Files.exists(new File(usecasesFile).toPath())) {
+                    StringBuilder newText = new StringBuilder("*Tests:*");
+                    for (Map.Entry<String, String> item: entry.getValue().entrySet()) {
+                        String data = String.format("[%s](../../%s)", item.getKey(), item.getValue());
+                        newText.append("\n- ").append(data);
+                    }
+
+                    MdGenerator.updateUsacaseFile(usecasesFile, newText.toString());
+                } else {
+                    getLog().warn(String.format("Usecase file %s doesn't exists. Skipping it.", usecasesFile));
+                }
             }
         }
 

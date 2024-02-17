@@ -2,10 +2,10 @@
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-fmf_output="${DIR}/../docs/io/skodjob/DummyTest.fmf"
+fmf_output="${DIR}/../docs/fmf/io/skodjob/DummyTest.fmf"
 fmf_expected="${DIR}/../test-docs-generator-maven-plugin/src/test/resources/expected-docs.fmf"
 
-md_output="${DIR}/../docs/io/skodjob/DummyTest.md"
+md_output="${DIR}/../docs/md/io/skodjob/DummyTest.md"
 md_expected="${DIR}/../test-docs-generator-maven-plugin/src/test/resources/expected-docs.md"
 
 if cmp -s "$fmf_output" "$fmf_expected"; then
