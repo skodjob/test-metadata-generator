@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Map;
 
@@ -115,25 +114,7 @@ public class DocGeneratorMojo extends AbstractMojo {
             }
         }
 
-        String usecasesPath = docsPath + "/usecases/";
-        getLog().info("usecasesPath: " + usecasesPath);
-        if (Files.exists(new File(usecasesPath).toPath())) {
-            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.getUsecasesMap().entrySet()) {
-                String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
-
-                if (Files.exists(new File(usecasesFile).toPath())) {
-                    StringBuilder newText = new StringBuilder("**Tests:**");
-                    for (Map.Entry<String, String> item: entry.getValue().entrySet()) {
-                        String data = String.format("[%s](../../%s)", item.getKey(), item.getValue());
-                        newText.append("\n- ").append(data);
-                    }
-
-                    MdGenerator.updateUsecaseFile(usecasesFile, newText.toString());
-                } else {
-                    getLog().warn(String.format("Usecase file %s doesn't exists. Skipping it.", usecasesFile));
-                }
-            }
-        }
+        MdGenerator.updateLinksInUsecases(docsPath);
 
         getLog().info("Done");
     }

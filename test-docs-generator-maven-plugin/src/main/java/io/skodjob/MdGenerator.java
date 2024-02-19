@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -39,7 +40,7 @@ import java.util.Objects;
  */
 public class MdGenerator {
 
-    public static final String USECASES_PATH = "usecases";
+    private static final String USECASES_PATH = "/usecases";
     private static Map<String, Map<String, String>> usecasesMap = new HashMap<>();
 
     /**
@@ -246,7 +247,7 @@ public class MdGenerator {
      * @param usecaseFilePath path to usecase file within docs dir
      * @param updatedData data that will be put into the file
      */
-    public static void updateUsecaseFile(String usecaseFilePath, String updatedData) {
+    private static void updateUsecaseFile(String usecaseFilePath, String updatedData) {
         try {
             File markdownFile = new File(usecaseFilePath);
             StringBuilder fileContent = new StringBuilder();
@@ -277,6 +278,31 @@ public class MdGenerator {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates links in existing usecases files with corresponding testcases that covers the use-case
+     * @param docsPath path where all test docs are stored
+     */
+    public static void updateLinksInUsecases(String docsPath) {
+        String usecasesPath = docsPath + USECASES_PATH;
+        if (Files.exists(new File(usecasesPath).toPath())) {
+            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.getUsecasesMap().entrySet()) {
+                String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
+
+                if (Files.exists(new File(usecasesFile).toPath())) {
+                    StringBuilder newText = new StringBuilder("**Tests:**");
+                    for (Map.Entry<String, String> item: entry.getValue().entrySet()) {
+                        String data = String.format("[%s](../../%s)", item.getKey(), item.getValue());
+                        newText.append("\n- ").append(data);
+                    }
+
+                    MdGenerator.updateUsecaseFile(usecasesFile, newText.toString());
+                } else {
+                    System.out.printf("Usecase file %s doesn't exists. Skipping it.%n", usecasesFile);
+                }
+            }
         }
     }
 
