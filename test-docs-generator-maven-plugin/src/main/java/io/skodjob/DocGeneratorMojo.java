@@ -115,9 +115,6 @@ public class DocGeneratorMojo extends AbstractMojo {
             }
         }
 
-        // TODO - check if usecases path exists based on passed docs dir
-        // Then go through all files and find corresponding data in map
-        // How to deal with links in tests docs? :O
         String usecasesPath = docsPath + "/usecases/";
         getLog().info("usecasesPath: " + usecasesPath);
         if (Files.exists(new File(usecasesPath).toPath())) {
@@ -125,13 +122,13 @@ public class DocGeneratorMojo extends AbstractMojo {
                 String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
 
                 if (Files.exists(new File(usecasesFile).toPath())) {
-                    StringBuilder newText = new StringBuilder("*Tests:*");
+                    StringBuilder newText = new StringBuilder("**Tests:**");
                     for (Map.Entry<String, String> item: entry.getValue().entrySet()) {
                         String data = String.format("[%s](../../%s)", item.getKey(), item.getValue());
                         newText.append("\n- ").append(data);
                     }
 
-                    MdGenerator.updateUsacaseFile(usecasesFile, newText.toString());
+                    MdGenerator.updateUsecaseFile(usecasesFile, newText.toString());
                 } else {
                     getLog().warn(String.format("Usecase file %s doesn't exists. Skipping it.", usecasesFile));
                 }

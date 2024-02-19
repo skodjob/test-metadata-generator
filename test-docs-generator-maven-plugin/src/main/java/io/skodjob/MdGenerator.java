@@ -39,6 +39,7 @@ import java.util.Objects;
  */
 public class MdGenerator {
 
+    public static final String USECASES_PATH = "usecases";
     private static Map<String, Map<String, String>> usecasesMap = new HashMap<>();
 
     /**
@@ -245,7 +246,7 @@ public class MdGenerator {
      * @param usecaseFilePath path to usecase file within docs dir
      * @param updatedData data that will be put into the file
      */
-    public static void updateUsacaseFile(String usecaseFilePath, String updatedData) {
+    public static void updateUsecaseFile(String usecaseFilePath, String updatedData) {
         try {
             File markdownFile = new File(usecaseFilePath);
             StringBuilder fileContent = new StringBuilder();
@@ -263,19 +264,17 @@ public class MdGenerator {
                 }
             }
 
-            if (foundGeneratedPart) {
-                // Append the new content
-                fileContent.append(updatedData).append("\n");
-
-                // Write the updated content back to the file
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
-                    writer.write(fileContent.toString());
-                }
-
-                System.out.println("Content updated successfully!");
-            } else {
-                System.out.println("Error: <!-- generated part --> not found in the file.");
+            if (!foundGeneratedPart) {
+                fileContent.append("\n<!-- generated part -->\n");
             }
+            // Append the new content
+            fileContent.append(updatedData).append("\n");
+            // Write the updated content back to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
+                writer.write(fileContent.toString());
+            }
+            System.out.println("Content updated successfully!");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
