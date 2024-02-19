@@ -288,7 +288,7 @@ public class MdGenerator {
     public static void updateLinksInUsecases(String docsPath) {
         String usecasesPath = docsPath + USECASES_PATH;
         if (Files.exists(new File(usecasesPath).toPath())) {
-            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.getUsecasesMap().entrySet()) {
+            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.usecasesMap.entrySet()) {
                 String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
 
                 if (Files.exists(new File(usecasesFile).toPath())) {
@@ -304,13 +304,5 @@ public class MdGenerator {
                 }
             }
         }
-    }
-
-    /**
-     * Get usecases map
-     * @return usescases map
-     */
-    public static Map<String, Map<String, String>> getUsecasesMap() {
-        return usecasesMap;
     }
 }
