@@ -311,7 +311,6 @@ public class MdGenerator {
      * @return usescases map
      */
     public static Map<String, Map<String, String>> getUsecasesMap() {
-        System.out.println(usecasesMap);
         return usecasesMap;
     }
 }
