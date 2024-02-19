@@ -34,14 +34,14 @@ public class DocGeneratorMojo extends AbstractMojo {
     /**
      * Path where are all test-classes stored
      */
-    @Parameter(property = "filePath", defaultValue = "./test", required = true, readonly = true)
-    String filePath;
+    @Parameter(property = "testsPath", defaultValue = "./test", required = true, readonly = true)
+    String testsPath;
 
     /**
      * Path where the test documentation should be generated to
      */
-    @Parameter(property = "generatePath", defaultValue = "./test-docs", required = true, readonly = true)
-    String generatePath;
+    @Parameter(property = "docsPath", defaultValue = "./test-docs", required = true, readonly = true)
+    String docsPath;
 
     /**
      * Option for generating fmf
@@ -66,8 +66,8 @@ public class DocGeneratorMojo extends AbstractMojo {
     /**
      * Method for the execution of the test-docs-generator Maven plugin
      * Generates documentation of test-cases based on specified parameters:
-     *  - {@link #filePath}
-     *  - {@link #generatePath}
+     *  - {@link #testsPath}
+     *  - {@link #docsPath}
      *  - {@link #project}
      *  - {@link #descriptor}
      */
@@ -94,15 +94,16 @@ public class DocGeneratorMojo extends AbstractMojo {
         for (URL url : classRealm.getURLs()) {
             getLog().debug(url.getFile());
         }
+        getLog().info("testsPath: " + testsPath);
 
-        Map<String, String> classes = Utils.getTestClassesWithTheirPath(filePath, generatePath);
+        Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath);
 
         for (Map.Entry<String, String> entry : classes.entrySet()) {
             try {
                 Class<?> testClass = classRealm.loadClass(entry.getValue());
-                MdGenerator.generate(testClass, entry.getKey() + ".md");
+                MdGenerator.generate(testClass,  docsPath + "md/" + entry.getKey() + ".md");
                 if (generateFmf) {
-                    FmfGenerator.generate(testClass, entry.getKey() + ".fmf");
+                    FmfGenerator.generate(testClass, docsPath + "fmf/" + entry.getKey() + ".fmf");
                 } else {
                     getLog().info("Skipping fmf generation");
                 }
@@ -112,6 +113,8 @@ public class DocGeneratorMojo extends AbstractMojo {
                 getLog().error(ex);
             }
         }
+
+        MdGenerator.updateLinksInUsecases(docsPath);
 
         getLog().info("Done");
     }

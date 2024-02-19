@@ -101,8 +101,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <filePath>./dummy-module/src/test/java/io/</filePath>
-                    <generatePath>./docs/</generatePath>
+                    <testsPath>./dummy-module/src/test/java/io/</testsPath>
+                    <docsPath>./docs/</docsPath>
                     <generateFmf>true</generateFmf>
                 </configuration>
             </plugin>
