@@ -94,7 +94,6 @@ public class DocGeneratorMojo extends AbstractMojo {
         for (URL url : classRealm.getURLs()) {
             getLog().debug(url.getFile());
         }
-        getLog().info("testsPath: " + testsPath);
 
         Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath);
 
@@ -143,7 +142,7 @@ public class DocGeneratorMojo extends AbstractMojo {
                     addJarFilesToClassPath(file, classRealm);
                 } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".jar")) {
                     // Print the absolute path if it's a .jar file
-                    getLog().info("Found .jar file: " + file.getAbsolutePath());
+                    getLog().debug("Found .jar file: " + file.getAbsolutePath());
                     classRealm.addURL(file.toURI().toURL());
                 }
             }
