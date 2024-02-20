@@ -101,7 +101,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <testsPath>./dummy-module/src/test/java/io/</testsPath>
+                    <testsPath>./dummy-module/src/test/java/io/skodjob/</testsPath>
                     <docsPath>./docs/</docsPath>
                     <generateFmf>true</generateFmf>
                 </configuration>

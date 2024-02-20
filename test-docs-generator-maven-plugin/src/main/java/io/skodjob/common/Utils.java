@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 public class Utils {
 
-    private static final Pattern REMOVE_BEFORE_PACKAGE = Pattern.compile(".*java\\/");
+    private static final Pattern REMOVE_BEFORE_PACKAGE = Pattern.compile(".*java/");
 
     /**
      * Updates Map ({@param classes}) with info about classes inside {@param packagePath}.
@@ -38,18 +38,16 @@ public class Utils {
      * @return updated Map with test-classes info from the {@param packagePath}
      */
     private static Map<String, String> getClassesForPackage(Map<String, String> classes, Path packagePath) {
-        try (Stream<Path> pathStream = Files.list(packagePath)) {
-            pathStream.forEach(path -> {
-                if (Files.isDirectory(path)) {
-                    classes.putAll(getClassesForPackage(classes, path));
-                } else {
-                    String classPackagePath = path.toAbsolutePath().toString().replaceAll(REMOVE_BEFORE_PACKAGE.toString(), "").replace(".java", "");
-                    classes.put(classPackagePath, classPackagePath.replaceAll("/", "."));
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        if (Files.isDirectory(packagePath)) {
+            try (Stream<Path> pathStream = Files.list(packagePath)) {
+                pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path)));
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        } else {
+            String classPackagePath = packagePath.toAbsolutePath().toString().replaceAll(REMOVE_BEFORE_PACKAGE.toString(), "").replace(".java", "");
+            classes.put(classPackagePath, classPackagePath.replaceAll("/", "."));
         }
 
         return classes;
