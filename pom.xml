@@ -49,11 +49,6 @@
         </developer>
     </developers>
 
-    <modules>
-        <module>test-docs-generator-maven-plugin</module>
-        <module>dummy-module</module>
-    </modules>
-
     <properties>
         <generatorRootDirectory>${basedir}</generatorRootDirectory>
 
@@ -200,10 +195,23 @@
 
     <profiles>
         <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>test-docs-generator-maven-plugin</module>
+                <module>dummy-module</module>
+            </modules>
+        </profile>
+        <profile>
             <id>ossrh</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
+            <modules>
+                <module>test-docs-generator-maven-plugin</module>
+            </modules>
             <properties>
                 <!--suppress UnresolvedMavenProperty -->
                 <gpg.executable>${env.GPG_EXECUTABLE}</gpg.executable>
