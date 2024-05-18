@@ -34,19 +34,19 @@ public class DocGeneratorMojo extends AbstractMojo {
     /**
      * Path where are all test-classes stored
      */
-    @Parameter(property = "testsPath", defaultValue = "./test", required = true, readonly = true)
+    @Parameter(property = "testsPath", defaultValue = "./test", required = true, readonly = false)
     String testsPath;
 
     /**
      * Path where the test documentation should be generated to
      */
-    @Parameter(property = "docsPath", defaultValue = "./test-docs", required = true, readonly = true)
+    @Parameter(property = "docsPath", defaultValue = "./test-docs", required = true, readonly = false)
     String docsPath;
 
     /**
      * Option for generating fmf
      */
-    @Parameter(property = "generateFmf", defaultValue = "false", readonly = true)
+    @Parameter(property = "generateFmf", defaultValue = "false", readonly = false)
     boolean generateFmf;
 
     /**
