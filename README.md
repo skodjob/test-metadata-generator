@@ -60,7 +60,7 @@ To generate documentation of the test method, you can use the following annotati
 
 Example of how the test can be annotated:
 ```java
-        @TestDoc(
+    @TestDoc(
         description = @Desc("Test checking that the application works as expected."),
         contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
         steps = {
@@ -82,6 +82,34 @@ Example of how the test can be annotated:
     void testMyCode(ExtensionContext extensionContext) {
         // ...
     }
+```
+
+Syntax grammar (i.e., EBNF) of the test case
+```plain
+// Lexer rules
+WS              : [ \t\r\n]+ -> skip;  // Ignore whitespace, tabs, carriage returns, and newlines
+STRING          : '"' (~["\\])* '"';   // Matches quoted strings correctly handling all characters
+NUMBER          : [0-9]+;              // For numbers, if needed
+
+// Parser rules
+testDocAnnotation : '@TestDoc' '(' testDocBody ')';
+testDocBody       : testDocAttribute ( ',' testDocAttribute )* ;
+testDocAttribute  : descriptionAttribute
+                  | contactAttribute
+                  | stepsAttribute
+                  | useCasesAttribute
+                  | tagsAttribute
+                  ;
+
+descriptionAttribute : 'description' '=' '@Desc' '(' STRING ')';
+contactAttribute     : 'contact' '=' '@Contact' '(' contactBody ')';
+contactBody          : 'name' '=' STRING ',' 'email' '=' STRING;
+stepsAttribute       : 'steps' '=' '{' step ( ',' step )* '}';
+step                 : '@Step' '(' 'value' '=' STRING ',' 'expected' '=' STRING ')';
+useCasesAttribute    : 'useCases' '=' '{' useCase ( ',' useCase )* '}';
+useCase              : '@UseCase' '(' 'id' '=' STRING ')';
+tagsAttribute        : 'tags' '=' '{' testTag ( ',' testTag )* '}';
+testTag              : '@TestTag' '(' 'value' '=' STRING ')';
 ```
 
 ## Generating the documentation
@@ -122,8 +150,8 @@ To start using the plugin, you will need to add it to your pom file together wit
             </execution>
         </executions>
         <configuration>
-            <filePath>./dummy-module/src/test/java/io/</filePath>
-            <generatePath>./docs/</generatePath>
+            <testsPath>./dummy-module/src/test/java/io/</testsPath>
+            <docsPath>./docs/</docsPath>
             <generateFmf>true</generateFmf>
         </configuration>
     </plugin>
