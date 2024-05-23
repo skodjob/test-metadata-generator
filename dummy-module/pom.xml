@@ -61,14 +61,13 @@
 
         <!-- Skip publishing of this module -->
         <maven.deploy.skip>true</maven.deploy.skip>
-        <generator.version>0.0.4-SNAPSHOT</generator.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>io.skodjob</groupId>
             <artifactId>test-docs-generator-maven-plugin</artifactId>
-            <version>${generator.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 
@@ -91,7 +90,7 @@
             <plugin>
                 <groupId>io.skodjob</groupId>
                 <artifactId>test-docs-generator-maven-plugin</artifactId>
-                <version>${generator.version}</version>
+                <version>${project.parent.version}</version>
                 <executions>
                     <execution>
                         <phase>post-integration-test</phase>

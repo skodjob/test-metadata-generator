@@ -4,3 +4,6 @@
 *.iml
 docs/fmf/
 docs/md/
+
+# Pom version backup
+**pom.xml.versionsBackup
