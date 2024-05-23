@@ -4,6 +4,12 @@ Test Documentation Generator is a maven-plugin that delivers a set of annotation
 You can annotate your test classes and test methods and provide details about test scenario.
 Plugin itself then parse the data from the annotations and generates `Markdown` files for readable documentation and `fmf` format metadata for automated reporting of the test cases to external systems.
 
+[![Build](https://github.com/skodjob/test-metadata-generator/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/skodjob/test-metadata-generator/actions/workflows/build.yaml)
+[![Publish-snapshot](https://github.com/skodjob/test-metadata-generator/actions/workflows/publish-snapshot.yaml/badge.svg?branch=main)](https://github.com/skodjob/test-metadata-generator/actions/workflows/publish-snapshot.yaml)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub Release](https://img.shields.io/github/v/release/skodjob/test-metadata-generator)](https://github.com/skodjob/test-metadata-generator/releases)
+[![Maven Central Version](https://img.shields.io/maven-central/v/io.skodjob/test-docs-generator-maven-plugin)](https://central.sonatype.com/search?q=io.skodjob.test-docs-generator-maven-plugin)
+
 ## Using the annotations
 
 ### Test class usage
