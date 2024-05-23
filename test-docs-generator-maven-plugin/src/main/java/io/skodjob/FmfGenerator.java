@@ -32,6 +32,13 @@ import java.util.Objects;
 public class FmfGenerator {
 
     /**
+     * Private Constructor
+     */
+    private FmfGenerator() {
+        // constructor
+    }
+
+    /**
      * Generates test documentation in fmf format.
      * Lists all methods (test-cases) annotated by {@link TestDoc} inside the {@param testClass}, creates
      * parent folders (if needed), new FMF file for the class, and after that generates test-suite documentation using

@@ -10,6 +10,13 @@ package io.skodjob.markdown;
 public class Header {
 
     /**
+     * Constructor
+     */
+    private Header() {
+        // constructor
+    }
+
+    /**
      * Method for creating first level header containing {@param text}
      * @param text that should be in first level header
      * @return first level header with {@param text}

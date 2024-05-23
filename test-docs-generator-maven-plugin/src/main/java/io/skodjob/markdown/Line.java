@@ -10,6 +10,13 @@ package io.skodjob.markdown;
 public class Line {
 
     /**
+     * Constructor
+     */
+    private Line() {
+        // constructor
+    }
+
+    /**
      * Creates horizontal line
      * @return horizontal line in String
      */

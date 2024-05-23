@@ -12,6 +12,13 @@ import java.util.List;
 public class Table {
 
     /**
+     * Constructor
+     */
+    private Table() {
+        // constructor
+    }
+
+    /**
      * Creates the Markdown table in text format, containing specified headers and rows
      * @param headers list of headers that should be inside the table
      * @param rows list of rows added to the table

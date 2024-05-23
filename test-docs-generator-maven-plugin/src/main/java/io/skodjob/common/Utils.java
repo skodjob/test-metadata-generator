@@ -24,6 +24,13 @@ public class Utils {
     private static final Pattern REMOVE_BEFORE_PACKAGE = Pattern.compile(".*java/");
 
     /**
+     * Constructor
+     */
+    private Utils() {
+        // constructor
+    }
+
+    /**
      * Updates Map ({@param classes}) with info about classes inside {@param packagePath}.
      * It goes through all files inside the {@param packagePath} and does two things:
      * - in case that file is directory (another package), it recursively calls itself and adds all info needed for all files

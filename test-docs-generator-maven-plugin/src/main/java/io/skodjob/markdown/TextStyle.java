@@ -10,6 +10,13 @@ package io.skodjob.markdown;
 public class TextStyle {
 
     /**
+     * Constructor
+     */
+    private TextStyle() {
+        // constructor
+    }
+
+    /**
      * Method for adding bold style to specified {@param text}
      * @param text that should be in bold style
      * @return bold stylization for {@param text}
