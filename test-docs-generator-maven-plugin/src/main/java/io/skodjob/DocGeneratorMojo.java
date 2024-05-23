@@ -32,6 +32,13 @@ import java.util.Map;
 public class DocGeneratorMojo extends AbstractMojo {
 
     /**
+     * Constructor
+     */
+    public DocGeneratorMojo() {
+        // constructor
+    }
+
+    /**
      * Path where are all test-classes stored
      */
     @Parameter(property = "testsPath", defaultValue = "./test", required = true, readonly = false)

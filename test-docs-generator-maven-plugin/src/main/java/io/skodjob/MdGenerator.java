@@ -44,6 +44,13 @@ public class MdGenerator {
     private static Map<String, Map<String, String>> usecasesMap = new HashMap<>();
 
     /**
+     * Private Constructor
+     */
+    private MdGenerator() {
+        // constructor
+    }
+
+    /**
      * Method that generates test documentation of the specified test-class.
      * Lists all methods (test-cases) annotated by {@link TestDoc} inside the {@param testClass}, creates
      * parent folders (if needed), new Markdown file for the class, and after that generates test-suite documentation using
