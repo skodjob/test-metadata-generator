@@ -1,0 +1,20 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: test-metadata-generator
+  title: Test Metadata Generator
+  namespace: quality-community
+  description: |
+    Test Documentation Generator is a maven-plugin that delivers a set of annotation for your test code. You can annotate your test classes and test methods and provide details about test scenario. Plugin itself then parse the data from the annotations and generates Markdown files for readable documentation and fmf format metadata for automated reporting of the test cases to external systems.
+  annotations:
+    github.com/project-slug: 'skodjob/test-metadata-generator'
+  tags:
+    - java
+  links:
+    - title: Help
+      url: https://github.com/skodjob/test-metadata-generator/blob/main/README.md
+      icon: help
+spec:
+  owner: group:redhat/skodjob
+  domain: quality-community/quality-community
