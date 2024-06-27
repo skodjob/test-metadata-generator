@@ -1,4 +1,4 @@
-# Core+
+# Default
 
 **Description**: Suspendisse sagittis ultrices augue. Aenean vel massa quis mauris vehicula lacinia. Aliquam id dolor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed ac dolor sit amet purus malesuada congue. Aenean fermentum risus id tortor. Praesent in mauris eu tortor porttitor accumsan. Aliquam ante. Quisque porta. Duis condimentum augue id magna semper rutrum. Duis ante orci, molestie vitae vehicula venenatis, tincidunt ac pede. Duis risus.
 
@@ -6,4 +6,5 @@
 
 <!-- generated part -->
 **Tests:**
-- [testMethodTwo](../../../.././docs/actual/option1/md/io/skodjob/DummyTest.md)
+- [testMethodOne](../../../.././docs/actual/option1/md/io/skodjob/DummyTest.md)
+- [testMethodFour](../../../.././docs/actual/option1/md/io/skodjob/DummyTest.md)

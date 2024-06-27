@@ -266,7 +266,7 @@ public class MdGenerator {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
                 writer.write(fileContent.toString());
             }
-            System.out.println("Content of %s updated successfully!".formatted(usecaseFilePath));
+            System.out.println("Content of %s updated successfully!".formatted(labelFilePath));
 
         } catch (IOException e) {
             e.printStackTrace();
