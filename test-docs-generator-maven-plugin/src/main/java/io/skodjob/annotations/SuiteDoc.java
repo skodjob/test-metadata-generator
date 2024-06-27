@@ -13,7 +13,7 @@ import java.lang.annotation.RetentionPolicy;
  *  - description
  *  - beforeTestSteps
  *  - afterTestSteps
- *  - useCases
+ *  - labels
  *
  * Example usage:
  * ```
@@ -27,8 +27,8 @@ import java.lang.annotation.RetentionPolicy;
  *             \@Step(value = "Delete management Pod", expected = "Management Pod is deleted"),
  *             \@Step(value = "Delete uber operator", expected = "Uber operator is deleted")
  *         },
- *         useCases = {
- *             \@UseCase(id = "core")
+ *         labels = {
+ *             \@Label(value = "regression")
  *         }
  *     )
  *     public static class TestClass {
@@ -62,14 +62,8 @@ public @interface SuiteDoc {
     Step[] afterTestSteps() default {};
 
     /**
-     * Array of use-cases covered by test-suite
-     * @return array of use-cases in {@link UseCase}
+     * Array of labels describing the test-case
+     * @return array of labels in {@link Label}
      */
-    UseCase[] useCases() default {};
-
-    /**
-     * Array of tags describing the test-case
-     * @return array of tags in {@link TestTag}
-     */
-    TestTag[] tags() default {};
+    Label[] labels() default {};
 }

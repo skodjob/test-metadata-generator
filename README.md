@@ -17,13 +17,12 @@ Plugin itself then parse the data from the annotations and generates `Markdown` 
 To generate documentation of the test class, you can use the following annotations:
 
 * `@SuiteDoc` - is the main annotation, which consists of all other annotation and should be used right above the method.
-  It contains three fields - `description`, `steps`, and `usecases`, that are set using other annotations.
+  It contains three fields - `description`, `steps`, and `labels`, that are set using other annotations.
 * `@Desc` - overall description of the test, it can contain anything.
 * `@Contact` - contact info with fields `name` and `email`.
 * `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
   is for the expected result of the step.
-* `@Usecase` - one of the use-cases that the test is testing.
-* `@TestTag` - specific tag for the test class.
+* `@Labels` - specific label for the test class.
 
 Example of how the test can be annotated:
 ```java
@@ -38,12 +37,9 @@ Example of how the test can be annotated:
                 @Step(value = "Delete management Pod", expected = "Management Pod is deleted"),
                 @Step(value = "Delete uber operator", expected = "Uber operator is deleted")
         },
-        useCases = {
-                @UseCase(id = "core")
-        },
-        tags = {
-                @TestTag(value = "regression"),
-                @TestTag(value = "clients")
+        labels = {
+                @Label(value = "regression"),
+                @Label(value = "clients")
         }
     )
     public static class DummyTest {
@@ -56,13 +52,12 @@ Example of how the test can be annotated:
 To generate documentation of the test method, you can use the following annotations:
 
 * `@TestDoc` - is the main annotation, which consists all other annotation and should be used right above the method.
-  It contains three fields - `description`, `steps`, and `usecases`, that are set using other annotations.
+  It contains three fields - `description`, `steps`, and `labels`, that are set using other annotations.
 * `@Desc` - overall description of the test, it can contain anything.
 * `@Contact` - contact info with fields `name` and `email`.
 * `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
   is for the expected result of the step.
-* `@Usecase` - one of the use-cases that the test is testing.
-* `@TestTag` - specific tag for the test class.
+* `@Label` - specific label for the test class.
 
 Example of how the test can be annotated:
 ```java
@@ -75,14 +70,9 @@ Example of how the test can be annotated:
                 @Step(value = "Clean up the test case", expected = "Everything is cleared"),
                 @Step(value = "Do a magic cleanup check", expected = "Everything magically work")
         },
-        useCases = {
-                @UseCase(id = "core"),
-                @UseCase(id = "core+"),
-                @UseCase(id = "core+++")
-        },
-        tags = {
-                @TestTag(value = "default"),
-                @TestTag(value = "regression"),
+        labels = {
+                @Label(value = "default"),
+                @Label(value = "regression"),
         }
     )
     void testMyCode(ExtensionContext extensionContext) {
@@ -103,8 +93,7 @@ testDocBody       : testDocAttribute ( ',' testDocAttribute )* ;
 testDocAttribute  : descriptionAttribute
                   | contactAttribute
                   | stepsAttribute
-                  | useCasesAttribute
-                  | tagsAttribute
+                  | labelsAttribute
                   ;
 
 descriptionAttribute : 'description' '=' '@Desc' '(' STRING ')';
@@ -112,10 +101,8 @@ contactAttribute     : 'contact' '=' '@Contact' '(' contactBody ')';
 contactBody          : 'name' '=' STRING ',' 'email' '=' STRING;
 stepsAttribute       : 'steps' '=' '{' step ( ',' step )* '}';
 step                 : '@Step' '(' 'value' '=' STRING ',' 'expected' '=' STRING ')';
-useCasesAttribute    : 'useCases' '=' '{' useCase ( ',' useCase )* '}';
-useCase              : '@UseCase' '(' 'id' '=' STRING ')';
-tagsAttribute        : 'tags' '=' '{' testTag ( ',' testTag )* '}';
-testTag              : '@TestTag' '(' 'value' '=' STRING ')';
+labelsAttribute      : 'labels' '=' '{' label ( ',' label )* '}';
+label                : '@Label' '(' 'value' '=' STRING ')';
 ```
 
 ## Generating the documentation

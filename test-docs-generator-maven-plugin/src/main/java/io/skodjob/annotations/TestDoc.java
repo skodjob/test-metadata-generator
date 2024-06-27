@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
  * Currently, we can specify following:
  *  - description
  *  - steps
- *  - useCases
+ *  - labels
  *
  * Example usage:
  * ```
@@ -23,8 +23,8 @@ import java.lang.annotation.RetentionPolicy;
  *             \@Step(value = "Do a magic trick", expected = "Magic trick is done with success"),
  *             \@Step(value = "Clean up the test case", expected = "Everything is cleared")
  *         },
- *         useCases = {
- *             \@UseCase(id = "core")
+ *         labels = {
+ *             \@Label(value = "regression")
  *         }
  *     )
  *     void testMyCode(ExtensionContext extensionContext) {
@@ -53,14 +53,8 @@ public @interface TestDoc {
     Step[] steps() default {};
 
     /**
-     * Array of use-cases covered by test-case
-     * @return array of use-cases in {@link UseCase}
+     * Array of labels describing the test-case
+     * @return array of labels in {@link Label}
      */
-    UseCase[] useCases() default {};
-
-    /**
-     * Array of tags describing the test-case
-     * @return array of tags in {@link TestTag}
-     */
-    TestTag[] tags() default {};
+    Label[] labels() default {};
 }

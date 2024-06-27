@@ -4,10 +4,9 @@
  */
 package io.skodjob;
 
+import io.skodjob.annotations.Label;
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.TestDoc;
-import io.skodjob.annotations.TestTag;
-import io.skodjob.annotations.UseCase;
 import io.skodjob.common.Utils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -80,7 +79,7 @@ public class FmfGenerator {
 
     /**
      * Creates a single record of a test-case (test-method) inside the test-class
-     * The record contains: name of the test, description, steps, tags, and use-cases obtained from the
+     * The record contains: name of the test, description, steps, labels, and use-cases obtained from the
      * {@param testDoc}.
      *
      * @param write file writer
@@ -97,11 +96,8 @@ public class FmfGenerator {
         if (!Objects.equals(testDoc.contact().name(), "")) {
             testCaseData.put("contact", String.format("%s <%s>", testDoc.contact().name(), testDoc.contact().email()));
         }
-        if (testDoc.tags().length > 0) {
-            testCaseData.put("tags", createTags(testDoc.tags()));
-        }
-        if (testDoc.useCases().length > 0) {
-            testCaseData.put("usecases", createUseCases(testDoc.useCases()));
+        if (testDoc.labels().length > 0) {
+            testCaseData.put("labels", createLabels(testDoc.labels()));
         }
         if (testDoc.steps().length > 0) {
             testCaseData.put("steps", createListOfSteps(testDoc.steps()));
@@ -141,26 +137,14 @@ public class FmfGenerator {
     }
 
     /**
-     * Creates list of use-cases for the particular test-case
-     * @param usecases list of usecases from the {@link TestDoc} annotation
-     * @return list of usecases in {@link List<String>}
+     * Creates list of labels for the particular test-case
+     * @param labels list of labels from the {@link TestDoc} annotation
+     * @return list of labels in {@link List<String>}
      */
-    private static List<String> createUseCases(UseCase[] usecases) {
-        List<String> fmfUsecases = new ArrayList<>();
-        Arrays.stream(usecases).forEach(usecase -> fmfUsecases.add(usecase.id()));
+    private static List<String> createLabels(Label[] labels) {
+        List<String> fmfLabels = new ArrayList<>();
+        Arrays.stream(labels).forEach(testLabel -> fmfLabels.add(testLabel.value()));
 
-        return fmfUsecases;
-    }
-
-    /**
-     * Creates list of tags for the particular test-case
-     * @param testTags list of tags from the {@link TestDoc} annotation
-     * @return list of tags in {@link List<String>}
-     */
-    private static List<String> createTags(TestTag[] testTags) {
-        List<String> fmfTags = new ArrayList<>();
-        Arrays.stream(testTags).forEach(testTag -> fmfTags.add(testTag.value()));
-
-        return fmfTags;
+        return fmfLabels;
     }
 }

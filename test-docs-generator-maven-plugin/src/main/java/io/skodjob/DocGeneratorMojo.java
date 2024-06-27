@@ -129,7 +129,7 @@ public class DocGeneratorMojo extends AbstractMojo {
             }
         }
 
-        MdGenerator.updateLinksInUsecases(docsPath);
+        MdGenerator.updateLinksInLabels(docsPath);
 
         getLog().info("Done");
     }

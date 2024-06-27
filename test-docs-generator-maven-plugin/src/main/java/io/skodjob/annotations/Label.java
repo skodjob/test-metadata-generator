@@ -8,13 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Interface for setting tag inside the {@link TestDoc} annotation
+ * Interface for setting label inside the {@link TestDoc} annotation
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TestTag {
+public @interface Label {
     /**
-     * Tag of the test-case stored inside `value` field
-     * @return tag in String
+     * Label of the test-case stored inside `value` field
+     * @return label in String
      */
     String value() default "";
 }
