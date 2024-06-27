@@ -112,16 +112,16 @@ public class DocGeneratorMojo extends AbstractMojo {
         for (Map.Entry<String, String> entry : classes.entrySet()) {
             try {
                 Class<?> testClass = classRealm.loadClass(entry.getValue());
+                // In case user don't want to generate fmf, the md file won't be in md folder
                 String mdDirectoryName = "";
                 if (generateFmf) {
+                    // Add md folder to the path
                     mdDirectoryName = "md/";
-                }
-                MdGenerator.generate(testClass,  docsPath + mdDirectoryName + entry.getKey() + ".md");
-                if (generateFmf) {
                     FmfGenerator.generate(testClass, docsPath + "fmf/" + entry.getKey() + ".fmf");
                 } else {
                     getLog().debug("Skipping fmf generation");
                 }
+                MdGenerator.generate(testClass,  docsPath + mdDirectoryName + entry.getKey() + ".md");
 
             } catch (ClassNotFoundException | IOException ex) {
                 getLog().warn(String.format("Cannot load %s", entry.getValue()));
