@@ -93,18 +93,60 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
+                        <id>option1</id>
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>test-docs-generator</goal>
                         </goals>
+                        <configuration>
+                            <testsPath>./dummy-module/src/test/java/io/skodjob/</testsPath>
+                            <docsPath>./docs/actual/option1/</docsPath>
+                            <generateFmf>true</generateFmf>
+                            <generateDirs>true</generateDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>option2</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>test-docs-generator</goal>
+                        </goals>
+                        <configuration>
+                            <testsPath>./dummy-module/src/test/java/io/skodjob/</testsPath>
+                            <docsPath>./docs/actual/option2/</docsPath>
+                            <generateFmf>true</generateFmf>
+                            <generateDirs>false</generateDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>option3</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>test-docs-generator</goal>
+                        </goals>
+                        <configuration>
+                            <testsPath>./dummy-module/src/test/java/io/skodjob/</testsPath>
+                            <docsPath>./docs/actual/option3/</docsPath>
+                            <generateFmf>false</generateFmf>
+                            <generateDirs>false</generateDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>option4</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>test-docs-generator</goal>
+                        </goals>
+                        <configuration>
+                            <testsPath>./dummy-module/src/test/java/io/skodjob/</testsPath>
+                            <docsPath>./docs/actual/option4/</docsPath>
+                            <generateFmf>false</generateFmf>
+                            <generateDirs>true</generateDirs>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <testsPath>./dummy-module/src/test/java/io/skodjob/</testsPath>
-                    <docsPath>./docs/</docsPath>
-                    <generateFmf>true</generateFmf>
-                </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>

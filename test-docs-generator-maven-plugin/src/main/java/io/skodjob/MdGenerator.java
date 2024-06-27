@@ -281,7 +281,7 @@ public class MdGenerator {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
                 writer.write(fileContent.toString());
             }
-            System.out.println("Content updated successfully!");
+            System.out.println("Content of %s updated successfully!".formatted(usecaseFilePath));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -294,6 +294,10 @@ public class MdGenerator {
      */
     public static void updateLinksInUsecases(String docsPath) {
         String usecasesPath = docsPath + USECASES_PATH;
+
+        int numberOfDirs = docsPath.length() - docsPath.replace("/", "").length();
+        String mdFilesPath = "../".repeat(numberOfDirs);
+
         if (Files.exists(new File(usecasesPath).toPath())) {
             for (Map.Entry<String, Map<String, String>> entry : MdGenerator.usecasesMap.entrySet()) {
                 String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
@@ -301,7 +305,7 @@ public class MdGenerator {
                 if (Files.exists(new File(usecasesFile).toPath())) {
                     StringBuilder newText = new StringBuilder("**Tests:**");
                     for (Map.Entry<String, String> item: entry.getValue().entrySet()) {
-                        String data = String.format("[%s](../../%s)", item.getKey(), item.getValue());
+                        String data = String.format("[%s](%s%s)", item.getKey(), mdFilesPath, item.getValue());
                         newText.append("\n- ").append(data);
                     }
 

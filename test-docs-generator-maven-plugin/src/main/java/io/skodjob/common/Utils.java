@@ -44,17 +44,21 @@ public class Utils {
      * @param packagePath path on which the files and classes should be listed
      * @return updated Map with test-classes info from the {@param packagePath}
      */
-    private static Map<String, String> getClassesForPackage(Map<String, String> classes, Path packagePath) {
+    private static Map<String, String> getClassesForPackage(Map<String, String> classes, Path packagePath, boolean generateDirs) {
         if (Files.isDirectory(packagePath)) {
             try (Stream<Path> pathStream = Files.list(packagePath)) {
-                pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path)));
+                pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path, generateDirs)));
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
         } else {
             String classPackagePath = packagePath.toAbsolutePath().toString().replaceAll(REMOVE_BEFORE_PACKAGE.toString(), "").replace(".java", "");
-            classes.put(classPackagePath, classPackagePath.replaceAll("/", "."));
+            String filename = classPackagePath;
+            if (!generateDirs) {
+                filename = filename.replaceAll("/", ".");
+            }
+            classes.put(filename, classPackagePath.replaceAll("/", "."));
         }
 
         return classes;
@@ -66,13 +70,14 @@ public class Utils {
      * on classpath
      * Also excludes files that should not be considered for documentation (currently just "AbstractST")
      * @param filePath path where are all test-classes present
+     * @param generateDirs whether it should generate subfolders for packages or not
      * @return Map with test-classes info from the {@param filePath}
      */
-    public static Map<String, String> getTestClassesWithTheirPath(String filePath) {
+    public static Map<String, String> getTestClassesWithTheirPath(String filePath, boolean generateDirs) {
         Map<String, String> classes = new HashMap<>();
 
         try (Stream<Path> pathStream = Files.list(Paths.get(filePath))) {
-            pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path)));
+            pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path, generateDirs)));
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -91,9 +96,10 @@ public class Utils {
         String parentPath = classFilePath.replace(fileName, "");
 
         final File parent = new File(parentPath);
-        if (!parent.mkdirs()) {
-            System.err.println("Could not create parent directories ");
+        if (!parent.exists()) {
+            parent.mkdirs();
         }
+
         final File classFile = new File(parent, fileName);
         classFile.createNewFile();
 

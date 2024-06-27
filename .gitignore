@@ -2,8 +2,10 @@
 **/target
 .DS_Store
 *.iml
-docs/fmf/
-docs/md/
+docs/actual/*/fmf/
+docs/actual/*/md/
+docs/actual/*/io/
+docs/actual/*/io*.md
 
 # Pom version backup
 **pom.xml.versionsBackup

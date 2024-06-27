@@ -51,6 +51,12 @@ public class DocGeneratorMojo extends AbstractMojo {
     String docsPath;
 
     /**
+     * Whether it should generate subfolders for packages or not
+     */
+    @Parameter(property = "generateDirs", defaultValue = "false", required = false, readonly = false)
+    boolean generateDirs;
+
+    /**
      * Option for generating fmf
      */
     @Parameter(property = "generateFmf", defaultValue = "false", readonly = false)
@@ -102,16 +108,19 @@ public class DocGeneratorMojo extends AbstractMojo {
             getLog().debug(url.getFile());
         }
 
-        Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath);
-
+        Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath, generateDirs);
         for (Map.Entry<String, String> entry : classes.entrySet()) {
             try {
                 Class<?> testClass = classRealm.loadClass(entry.getValue());
-                MdGenerator.generate(testClass,  docsPath + "md/" + entry.getKey() + ".md");
+                String mdDirectoryName = "";
+                if (generateFmf) {
+                    mdDirectoryName = "md/";
+                }
+                MdGenerator.generate(testClass,  docsPath + mdDirectoryName + entry.getKey() + ".md");
                 if (generateFmf) {
                     FmfGenerator.generate(testClass, docsPath + "fmf/" + entry.getKey() + ".fmf");
                 } else {
-                    getLog().info("Skipping fmf generation");
+                    getLog().debug("Skipping fmf generation");
                 }
 
             } catch (ClassNotFoundException | IOException ex) {
