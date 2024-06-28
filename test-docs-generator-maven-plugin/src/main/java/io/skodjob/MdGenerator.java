@@ -242,6 +242,14 @@ public class MdGenerator {
         return usesText;
     }
 
+    /**
+     * Creates list of full labels related data pasted to md file.
+     *
+     * @param labels         list of labels
+     * @param labelsFilePath path to directory with labels description
+     * @param classFilePath  path to final md file
+     * @return list of final String for each label
+     */
     private static List<String> createLabelsLink(List<String> labels, String labelsFilePath, String classFilePath) {
         List<String> labelsWithLinks = new ArrayList<>();
 
