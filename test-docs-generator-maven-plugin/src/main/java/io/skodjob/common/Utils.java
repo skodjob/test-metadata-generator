@@ -33,14 +33,14 @@ public class Utils {
     /**
      * Updates Map ({@param classes}) with info about classes inside {@param packagePath}.
      * It goes through all files inside the {@param packagePath} and does two things:
-     * - in case that file is directory (another package), it recursively calls itself and adds all info needed for all files
-     *   inside the directory
-     * - otherwise adds key/value record in the map
-     *      - key -> path in which the particular `.md` file will be generated, typically {@param generatePath}/{@code classPackagePath}
-     *          - f.e. -> ./test-docs/path/to/my/package/TestClassST
-     *          - value -> path for the particular test class -> in package format, available on classpath
-     *          - f.e. -> path.to.my.package.TestClassST
-     * @param classes Map that should be updated with test-classes info
+     * <ul><li>in case that file is directory (another package), it recursively calls itself and adds all info needed for all files inside the directory</li>
+     * <li>otherwise adds key/value record in the map
+     * <ul><li>key -> path in which the particular `.md` file will be generated, typically {@param generatePath}/{@code classPackagePath}
+     * <ul><li>f.e. -> ./test-docs/path/to/my/package/TestClassST</li>
+     * <li>value -> path for the particular test class -> in package format, available on classpath</li>
+     * <li>f.e. -> path.to.my.package.TestClassST</li></ul></li></ul></li></ul>
+     *
+     * @param classes     Map that should be updated with test-classes info
      * @param packagePath path on which the files and classes should be listed
      * @return updated Map with test-classes info from the {@param packagePath}
      */
@@ -69,7 +69,8 @@ public class Utils {
      * path, where the Markdown file will be created, and value is package with class name available
      * on classpath
      * Also excludes files that should not be considered for documentation (currently just "AbstractST")
-     * @param filePath path where are all test-classes present
+     *
+     * @param filePath     path where are all test-classes present
      * @param generateDirs whether it should generate subfolders for packages or not
      * @return Map with test-classes info from the {@param filePath}
      */
@@ -87,6 +88,7 @@ public class Utils {
 
     /**
      * Creates needed files and folders for the particular test-suite (test-class)
+     *
      * @param classFilePath path where the test-suite (test-class) is present
      * @return file writer
      * @throws IOException during file creation

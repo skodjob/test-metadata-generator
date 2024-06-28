@@ -43,7 +43,7 @@ public class FmfGenerator {
      * parent folders (if needed), new FMF file for the class, and after that generates test-suite documentation using
      * {@link #generateDocumentationForTestCases(PrintWriter, List)}, all written inside the newly created Markdown file.
      *
-     * @param testClass for which the FMF file is created and test-cases are documented
+     * @param testClass     for which the FMF file is created and test-cases are documented
      * @param classFilePath path of the FMF file
      * @throws IOException during file creation
      */
@@ -63,7 +63,8 @@ public class FmfGenerator {
 
     /**
      * Generates documentation records for each test-cases (test-methods) from {@param methods}
-     * @param writer file writer
+     *
+     * @param writer  file writer
      * @param methods containing {@link TestDoc} annotation
      */
     private static void generateDocumentationForTestCases(PrintWriter writer, List<Method> methods) {
@@ -82,8 +83,8 @@ public class FmfGenerator {
      * The record contains: name of the test, description, steps, labels, and use-cases obtained from the
      * {@param testDoc}.
      *
-     * @param write file writer
-     * @param testDoc annotation containing all @TestDoc objects, from which is the record generated
+     * @param write      file writer
+     * @param testDoc    annotation containing all @TestDoc objects, from which is the record generated
      * @param methodName name of the test-case containing {@param testDoc}
      */
     public static void createTestRecord(PrintWriter write, TestDoc testDoc, String methodName) {
@@ -138,6 +139,7 @@ public class FmfGenerator {
 
     /**
      * Creates list of labels for the particular test-case
+     *
      * @param labels list of labels from the {@link TestDoc} annotation
      * @return list of labels in {@link List<String>}
      */

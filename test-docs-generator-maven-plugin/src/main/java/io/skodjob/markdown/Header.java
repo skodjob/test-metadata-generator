@@ -18,6 +18,7 @@ public class Header {
 
     /**
      * Method for creating first level header containing {@param text}
+     *
      * @param text that should be in first level header
      * @return first level header with {@param text}
      */
@@ -27,6 +28,7 @@ public class Header {
 
     /**
      * Method for creating second level header containing {@param text}
+     *
      * @param text that should be in second level header
      * @return second level header with {@param text}
      */

@@ -18,6 +18,7 @@ public class Line {
 
     /**
      * Creates horizontal line
+     *
      * @return horizontal line in String
      */
     public static String horizontalLine() {

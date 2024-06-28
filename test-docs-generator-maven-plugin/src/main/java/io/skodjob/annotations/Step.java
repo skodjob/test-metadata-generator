@@ -14,12 +14,14 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Step {
     /**
      * Step of the test-case stored inside `value` field
+     *
      * @return step in String
      */
     String value() default "";
 
     /**
      * Expected outcome of the particular step in test-case
+     *
      * @return expected outcome in String
      */
     String expected() default "";

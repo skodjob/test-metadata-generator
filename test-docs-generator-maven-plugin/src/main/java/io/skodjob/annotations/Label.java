@@ -14,6 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Label {
     /**
      * Label of the test-case stored inside `value` field
+     *
      * @return label in String
      */
     String value() default "";

@@ -45,7 +45,7 @@ public class DummyTest {
 
     @TestDoc(
         description = @Desc("Test checking that the application works as expected. " +
-                "This is just a little bit longer line, nothing else."),
+            "This is just a little bit longer line, nothing else."),
         contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
         steps = {
             @Step(value = "Create object instance", expected = "Instance of an object is created"),
@@ -60,7 +60,7 @@ public class DummyTest {
 
     @TestDoc(
         description = @Desc("Test checking that the application works as expected. " +
-                "This is just a little bit longer line, nothing else."),
+            "This is just a little bit longer line, nothing else."),
         contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io")
     )
     void testMethodThree() {
@@ -69,7 +69,7 @@ public class DummyTest {
 
     @TestDoc(
         description = @Desc("Test checking that the application works as expected. " +
-                "This is just a little bit longer line, nothing else."),
+            "This is just a little bit longer line, nothing else."),
         contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io"),
         labels = {
             @Label(value = "default"),

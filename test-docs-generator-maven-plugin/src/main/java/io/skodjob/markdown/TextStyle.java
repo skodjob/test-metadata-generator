@@ -18,6 +18,7 @@ public class TextStyle {
 
     /**
      * Method for adding bold style to specified {@param text}
+     *
      * @param text that should be in bold style
      * @return bold stylization for {@param text}
      */

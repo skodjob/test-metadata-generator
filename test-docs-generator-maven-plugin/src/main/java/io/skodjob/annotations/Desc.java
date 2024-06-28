@@ -14,6 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Desc {
     /**
      * Description of the test-case stored inside `value` field
+     *
      * @return description in String
      */
     String value();

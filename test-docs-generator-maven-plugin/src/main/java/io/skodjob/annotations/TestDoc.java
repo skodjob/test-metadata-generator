@@ -36,24 +36,28 @@ public @interface TestDoc {
 
     /**
      * Description of particular test-case
+     *
      * @return description in {@link Desc}
      */
     Desc description();
 
     /**
      * Contact name of particular test-case
+     *
      * @return contact name in {@link Contact}
      */
     Contact contact() default @Contact(name = "", email = "");
 
     /**
      * Array of steps done in the test-case
+     *
      * @return array of steps in {@link Step}
      */
     Step[] steps() default {};
 
     /**
      * Array of labels describing the test-case
+     *
      * @return array of labels in {@link Label}
      */
     Label[] labels() default {};

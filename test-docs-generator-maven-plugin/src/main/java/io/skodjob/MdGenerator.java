@@ -196,9 +196,9 @@ public class MdGenerator {
 
     /**
      * For the provided list of steps creates table with following columns:
-     * - Step - number of the current step
-     * - Action - action done during the step
-     * - Result - expected result of the step
+     * <ul>Step - number of the current step</li>
+     * <li>Action - action done during the step</li>
+     * <li>Result - expected result of the step</li></ul>
      *
      * @param steps list of steps of the test-case
      * @return String representation of table in Markdown
@@ -231,7 +231,7 @@ public class MdGenerator {
      * Update label file that is available in the docs dir
      *
      * @param labelFilePath path to label file within docs dir
-     * @param updatedData     data that will be put into the file
+     * @param updatedData   data that will be put into the file
      */
     private static void updateLabelFile(String labelFilePath, String updatedData) {
         try {

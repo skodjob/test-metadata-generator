@@ -25,9 +25,9 @@ import java.util.Map;
  * DocGeneratorMojo class for Maven plugin handling
  */
 @Mojo(
-        name = "test-docs-generator",
-        defaultPhase = LifecyclePhase.COMPILE,
-        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
+    name = "test-docs-generator",
+    defaultPhase = LifecyclePhase.COMPILE,
+    requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
 )
 public class DocGeneratorMojo extends AbstractMojo {
 
@@ -79,10 +79,10 @@ public class DocGeneratorMojo extends AbstractMojo {
     /**
      * Method for the execution of the test-docs-generator Maven plugin
      * Generates documentation of test-cases based on specified parameters:
-     *  - {@link #testsPath}
-     *  - {@link #docsPath}
-     *  - {@link #project}
-     *  - {@link #descriptor}
+     * <ul><li>{@link #testsPath}</li>
+     * <li>{@link #docsPath}</li>
+     * <li>{@link #project}</li>
+     * <li>{@link #descriptor}</li></ul>
      */
     public void execute() {
 
@@ -100,7 +100,7 @@ public class DocGeneratorMojo extends AbstractMojo {
             // Add all jar files in target lib
             addJarFilesToClassPath(new File(project.getBuild().getDirectory()), classRealm);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
 
         getLog().debug("Loaded files in classpath:");
@@ -121,7 +121,7 @@ public class DocGeneratorMojo extends AbstractMojo {
                 } else {
                     getLog().debug("Skipping fmf generation");
                 }
-                MdGenerator.generate(testClass,  docsPath + mdDirectoryName + entry.getKey() + ".md");
+                MdGenerator.generate(testClass, docsPath + mdDirectoryName + entry.getKey() + ".md");
 
             } catch (ClassNotFoundException | IOException ex) {
                 getLog().warn(String.format("Cannot load %s", entry.getValue()));
@@ -136,9 +136,10 @@ public class DocGeneratorMojo extends AbstractMojo {
 
     /**
      * It goes through all files inside the {@param directory} and does two things:
-     *   - in case that file is directory (another package), it recursively calls itself and adds all .jar files to the classPath
-     *   - otherwise adds the .jar files to classPath
-     * @param directory where the files are listed
+     * <ul><li>in case that file is directory (another package), it recursively calls itself and adds all .jar files to the classPath</li>
+     * <li>otherwise adds the .jar files to classPath</li></ul>
+     *
+     * @param directory  where the files are listed
      * @param classRealm realm containing all libs set on classPath, from where the test-classes will be loaded
      * @throws MalformedURLException during URL construction
      */
