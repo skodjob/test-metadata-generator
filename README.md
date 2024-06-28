@@ -22,7 +22,7 @@ To generate documentation of the test class, you can use the following annotatio
 * `@Contact` - contact info with fields `name` and `email`.
 * `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
   is for the expected result of the step.
-* `@Labels` - specific label for the test class.
+* `@Label` - specific label for the test class.
 
 Example of how the test can be annotated:
 ```java
@@ -38,7 +38,7 @@ Example of how the test can be annotated:
                 @Step(value = "Delete uber operator", expected = "Uber operator is deleted")
         },
         labels = {
-                @Label(value = "regression"),
+                @Label(value = "upgrade"),
                 @Label(value = "clients")
         }
     )
@@ -71,8 +71,8 @@ Example of how the test can be annotated:
                 @Step(value = "Do a magic cleanup check", expected = "Everything magically work")
         },
         labels = {
-                @Label(value = "default"),
-                @Label(value = "regression"),
+                @Label(value = "security"),
+                @Label(value = "upgrade"),
         }
     )
     void testMyCode(ExtensionContext extensionContext) {

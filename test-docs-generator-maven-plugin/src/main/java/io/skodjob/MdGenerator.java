@@ -154,12 +154,6 @@ public class MdGenerator {
                 labelsMap.put(labelPure, existingMap);
             });
         }
-
-//        if (testDoc.labels().length != 0) {
-//            write.println(TextStyle.boldText("Tags:"));
-//            write.println();
-//            write.println(TextList.createUnorderedList(createLabels(testDoc.labels())));
-//        }
     }
 
     /**
