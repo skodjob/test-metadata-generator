@@ -22,7 +22,7 @@ To generate documentation of the test class, you can use the following annotatio
 * `@Contact` - contact info with fields `name` and `email`.
 * `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
   is for the expected result of the step.
-* `@Label` - specific label for the test class.
+  * `@Label` - label used for specify area of tests defined within the test class.
 
 Example of how the test can be annotated:
 ```java
@@ -57,7 +57,7 @@ To generate documentation of the test method, you can use the following annotati
 * `@Contact` - contact info with fields `name` and `email`.
 * `@Step` - particular step done in a test, contains two fields - `value` that contains the step information, `expected`
   is for the expected result of the step.
-* `@Label` - specific label for the test class.
+* `@Label` - label used for group tests covers similar areas.
 
 Example of how the test can be annotated:
 ```java
