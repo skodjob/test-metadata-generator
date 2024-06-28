@@ -4,11 +4,10 @@
  */
 package io.skodjob;
 
+import io.skodjob.annotations.Label;
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.SuiteDoc;
 import io.skodjob.annotations.TestDoc;
-import io.skodjob.annotations.TestTag;
-import io.skodjob.annotations.UseCase;
 import io.skodjob.common.Utils;
 import io.skodjob.markdown.Header;
 import io.skodjob.markdown.Line;
@@ -40,8 +39,8 @@ import java.util.Objects;
  */
 public class MdGenerator {
 
-    private static final String USECASES_PATH = "/usecases";
-    private static Map<String, Map<String, String>> usecasesMap = new HashMap<>();
+    private static final String LABELS = "/labels";
+    private static Map<String, Map<String, String>> labelsMap = new HashMap<>();
 
     /**
      * Private Constructor
@@ -57,7 +56,7 @@ public class MdGenerator {
      * {@link #createSuiteRecord(PrintWriter, SuiteDoc)} and then test-cases documentation using {@link #createTestRecord(PrintWriter, TestDoc, String, String)},
      * all written inside the newly created Markdown file.
      *
-     * @param testClass for which the Markdown file is created and test-cases are documented
+     * @param testClass     for which the Markdown file is created and test-cases are documented
      * @param classFilePath path of the Markdown file
      * @throws IOException during file creation
      */
@@ -83,7 +82,8 @@ public class MdGenerator {
 
     /**
      * Generates documentation for the test-suite (test-class) if {@link SuiteDoc} is present
-     * @param writer file writer
+     *
+     * @param writer   file writer
      * @param suiteDoc containing {@link SuiteDoc} annotation
      */
     private static void generateDocumentationForTestSuite(PrintWriter writer, SuiteDoc suiteDoc) {
@@ -94,7 +94,8 @@ public class MdGenerator {
 
     /**
      * Generates documentation records for each test-cases (test-methods) from {@param methods}
-     * @param writer file writer
+     *
+     * @param writer  file writer
      * @param methods containing {@link TestDoc} annotation
      */
     private static void generateDocumentationForTestCases(PrintWriter writer, String classFilePath, List<Method> methods) {
@@ -114,10 +115,10 @@ public class MdGenerator {
      * The record contains: name of the test as header level 2, description, steps, and use-cases obtained from the
      * {@param testDoc}.
      *
-     * @param write file writer
-     * @param testDoc annotation containing all @TestDoc objects, from which is the record generated
+     * @param write         file writer
+     * @param testDoc       annotation containing all @TestDoc objects, from which is the record generated
      * @param classFilePath path to generated class file doc
-     * @param methodName name of the test-case containing {@param testDoc}
+     * @param methodName    name of the test-case containing {@param testDoc}
      */
     public static void createTestRecord(PrintWriter write, TestDoc testDoc, String classFilePath, String methodName) {
         write.println();
@@ -136,28 +137,22 @@ public class MdGenerator {
             write.println(createTableOfSteps(testDoc.steps()));
         }
 
-        if (testDoc.useCases().length != 0) {
-            write.println(TextStyle.boldText("Use-cases:"));
+        if (testDoc.labels().length != 0) {
+            write.println(TextStyle.boldText("Labels:"));
             write.println();
 
-            List<String> usecases = createUseCases(testDoc.useCases());
-            write.println(TextList.createUnorderedList(usecases));
-            usecases.forEach(usecase -> {
+            List<String> labels = createLabels(testDoc.labels());
+            write.println(TextList.createUnorderedList(labels));
+            labels.forEach(label -> {
                 // Get the existing list or create a new one if the key doesn't exist
-                String useCasePure = usecase.replace("`", "");
-                Map<String, String> existingMap = usecasesMap.getOrDefault(useCasePure, new HashMap<>());
+                String labelPure = label.replace("`", "");
+                Map<String, String> existingMap = labelsMap.getOrDefault(labelPure, new HashMap<>());
                 // Add the new value to the list
                 existingMap.put(methodName, classFilePath);
 
                 // Put the updated list back into the map
-                usecasesMap.put(useCasePure, existingMap);
+                labelsMap.put(labelPure, existingMap);
             });
-        }
-
-        if (testDoc.tags().length != 0) {
-            write.println(TextStyle.boldText("Tags:"));
-            write.println();
-            write.println(TextList.createUnorderedList(createTags(testDoc.tags())));
         }
     }
 
@@ -166,7 +161,7 @@ public class MdGenerator {
      * The record contains: description, before tests execution steps, after tests execution steps, and use-cases obtained from the
      * {@param suiteDoc}.
      *
-     * @param write file writer
+     * @param write    file writer
      * @param suiteDoc annotation containing all @SuiteDoc objects, from which is the record generated
      */
     public static void createSuiteRecord(PrintWriter write, SuiteDoc suiteDoc) {
@@ -190,16 +185,10 @@ public class MdGenerator {
             write.println(createTableOfSteps(suiteDoc.afterTestSteps()));
         }
 
-        if (suiteDoc.useCases().length != 0) {
-            write.println(TextStyle.boldText("Use-cases:"));
+        if (suiteDoc.labels().length != 0) {
+            write.println(TextStyle.boldText("Labels:"));
             write.println();
-            write.println(TextList.createUnorderedList(createUseCases(suiteDoc.useCases())));
-        }
-
-        if (suiteDoc.tags().length != 0) {
-            write.println(TextStyle.boldText("Tags:"));
-            write.println();
-            write.println(TextList.createUnorderedList(createTags(suiteDoc.tags())));
+            write.println(TextList.createUnorderedList(createLabels(suiteDoc.labels())));
         }
 
         write.println(Line.horizontalLine());
@@ -207,9 +196,9 @@ public class MdGenerator {
 
     /**
      * For the provided list of steps creates table with following columns:
-     *  - Step - number of the current step
-     *  - Action - action done during the step
-     *  - Result - expected result of the step
+     * - Step - number of the current step
+     * - Action - action done during the step
+     * - Result - expected result of the step
      *
      * @param steps list of steps of the test-case
      * @return String representation of table in Markdown
@@ -226,37 +215,27 @@ public class MdGenerator {
     }
 
     /**
-     * Creates list of use-cases for the particular test-case in format - `use-case`
-     * @param usecases list of usecases from the {@link TestDoc} annotation
-     * @return list of usecases in {@link List<String>}
+     * Creates list of labels for the particular test-case in format - `label`
+     *
+     * @param labels list of labels from the {@link TestDoc} annotation
+     * @return list of labels in {@link List<String>}
      */
-    private static List<String> createUseCases(UseCase[] usecases) {
+    private static List<String> createLabels(Label[] labels) {
         List<String> usesText = new ArrayList<>();
-        Arrays.stream(usecases).forEach(usecase -> usesText.add("`" + usecase.id() + "`"));
+        Arrays.stream(labels).forEach(testLabel -> usesText.add("`" + testLabel.value() + "`"));
 
         return usesText;
     }
 
     /**
-     * Creates list of tags for the particular test-case in format - `tag`
-     * @param testTags list of tags from the {@link TestDoc} annotation
-     * @return list of tags in {@link List<String>}
+     * Update label file that is available in the docs dir
+     *
+     * @param labelFilePath path to label file within docs dir
+     * @param updatedData     data that will be put into the file
      */
-    private static List<String> createTags(TestTag[] testTags) {
-        List<String> usesText = new ArrayList<>();
-        Arrays.stream(testTags).forEach(testTag -> usesText.add("`" + testTag.value() + "`"));
-
-        return usesText;
-    }
-
-    /**
-     * Update usecase file that is available in the docs dir
-     * @param usecaseFilePath path to usecase file within docs dir
-     * @param updatedData data that will be put into the file
-     */
-    private static void updateUsecaseFile(String usecaseFilePath, String updatedData) {
+    private static void updateLabelFile(String labelFilePath, String updatedData) {
         try {
-            File markdownFile = new File(usecaseFilePath);
+            File markdownFile = new File(labelFilePath);
             StringBuilder fileContent = new StringBuilder();
             boolean foundGeneratedPart = false;
 
@@ -281,7 +260,7 @@ public class MdGenerator {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
                 writer.write(fileContent.toString());
             }
-            System.out.println("Content of %s updated successfully!".formatted(usecaseFilePath));
+            System.out.println("Content of %s updated successfully!".formatted(labelFilePath));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -289,29 +268,30 @@ public class MdGenerator {
     }
 
     /**
-     * Updates links in existing usecases files with corresponding testcases that covers the use-case
+     * Updates links in existing labels files with corresponding testcases that covers the use-case
+     *
      * @param docsPath path where all test docs are stored
      */
-    public static void updateLinksInUsecases(String docsPath) {
-        String usecasesPath = docsPath + USECASES_PATH;
+    public static void updateLinksInLabels(String docsPath) {
+        String labelsPath = docsPath + LABELS;
 
         int numberOfDirs = docsPath.length() - docsPath.replace("/", "").length();
         String mdFilesPath = "../".repeat(numberOfDirs);
 
-        if (Files.exists(new File(usecasesPath).toPath())) {
-            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.usecasesMap.entrySet()) {
-                String usecasesFile = usecasesPath + "/" + entry.getKey() + ".md";
+        if (Files.exists(new File(labelsPath).toPath())) {
+            for (Map.Entry<String, Map<String, String>> entry : MdGenerator.labelsMap.entrySet()) {
+                String labelsFile = labelsPath + "/" + entry.getKey() + ".md";
 
-                if (Files.exists(new File(usecasesFile).toPath())) {
+                if (Files.exists(new File(labelsFile).toPath())) {
                     StringBuilder newText = new StringBuilder("**Tests:**");
-                    for (Map.Entry<String, String> item: entry.getValue().entrySet()) {
+                    for (Map.Entry<String, String> item : entry.getValue().entrySet()) {
                         String data = String.format("[%s](%s%s)", item.getKey(), mdFilesPath, item.getValue());
                         newText.append("\n- ").append(data);
                     }
 
-                    MdGenerator.updateUsecaseFile(usecasesFile, newText.toString());
+                    MdGenerator.updateLabelFile(labelsFile, newText.toString());
                 } else {
-                    System.out.printf("Usecase file %s doesn't exists. Skipping it.%n", usecasesFile);
+                    System.out.printf("Label file %s doesn't exists. Skipping it.%n", labelsFile);
                 }
             }
         }

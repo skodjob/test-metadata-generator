@@ -3,7 +3,7 @@
   contact: Jakub Stejskal <ja@kub.io>
   description: |
     Test checking that the application works as expected. This is just a little bit longer line, nothing else.
-  tags:
+  labels:
   - default
   - regression
 
@@ -11,8 +11,6 @@
   summary: testMethodOne
   description: |
     Test checking that the application works as expected
-  usecases:
-  - core
   steps:
   - result: Instance of an object is created
     step: Create object instance
@@ -20,7 +18,7 @@
     step: Do a magic trick
   - result: Everything is cleared
     step: Clean up the test case
-  tags:
+  labels:
   - default
 
 /testMethodThree:
@@ -34,10 +32,6 @@
   contact: Jakub Stejskal <ja@kub.io>
   description: |
     Test checking that the application works as expected. This is just a little bit longer line, nothing else.
-  usecases:
-  - core
-  - core+
-  - core+++
   steps:
   - result: Instance of an object is created
     step: Create object instance

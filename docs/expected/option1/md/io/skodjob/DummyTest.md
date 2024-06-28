@@ -16,11 +16,7 @@
 | 1. | Delete management Pod | Management Pod is deleted |
 | 2. | Delete uber operator | Uber operator is deleted |
 
-**Use-cases:**
-
-* `core`
-
-**Tags:**
+**Labels:**
 
 * `regression`
 * `clients`
@@ -33,7 +29,7 @@
 
 **Contact:** `Jakub Stejskal <ja@kub.io>`
 
-**Tags:**
+**Labels:**
 
 * `default`
 * `regression`
@@ -51,11 +47,7 @@
 | 2. | Do a magic trick | Magic trick is done with success |
 | 3. | Clean up the test case | Everything is cleared |
 
-**Use-cases:**
-
-* `core`
-
-**Tags:**
+**Labels:**
 
 * `default`
 
@@ -81,10 +73,4 @@
 | 2. | Do a magic trick | Magic trick is done with success |
 | 3. | Clean up the test case | Everything is cleared |
 | 4. | Do a magic cleanup check | Everything magically work |
-
-**Use-cases:**
-
-* `core`
-* `core+`
-* `core+++`
 
