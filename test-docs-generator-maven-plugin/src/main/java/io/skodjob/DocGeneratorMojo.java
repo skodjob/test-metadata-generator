@@ -100,7 +100,7 @@ public class DocGeneratorMojo extends AbstractMojo {
             // Add all jar files in target lib
             addJarFilesToClassPath(new File(project.getBuild().getDirectory()), classRealm);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
 
         getLog().debug("Loaded files in classpath:");

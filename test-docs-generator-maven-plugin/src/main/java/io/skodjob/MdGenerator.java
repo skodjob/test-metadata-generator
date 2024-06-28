@@ -217,7 +217,6 @@ public class MdGenerator {
     /**
      * Creates list of labels for the particular test-case in format - `label`
      *
-     *
      * @param labels list of labels from the {@link TestDoc} annotation
      * @return list of labels in {@link List<String>}
      */
@@ -232,7 +231,7 @@ public class MdGenerator {
      * Update label file that is available in the docs dir
      *
      * @param labelFilePath path to label file within docs dir
-     * @param updatedData     data that will be put into the file
+     * @param updatedData   data that will be put into the file
      */
     private static void updateLabelFile(String labelFilePath, String updatedData) {
         try {

@@ -27,7 +27,7 @@ public class TextList {
     public static String createUnorderedList(List<String> objects) {
         StringBuilder builder = new StringBuilder();
         objects.forEach(object ->
-            builder.append("* " + object + "\n")
+            builder.append("* ").append(object).append("\n")
         );
 
         return builder.toString();
