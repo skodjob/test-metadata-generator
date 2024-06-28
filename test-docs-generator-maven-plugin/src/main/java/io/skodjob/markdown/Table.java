@@ -20,8 +20,9 @@ public class Table {
 
     /**
      * Creates the Markdown table in text format, containing specified headers and rows
+     *
      * @param headers list of headers that should be inside the table
-     * @param rows list of rows added to the table
+     * @param rows    list of rows added to the table
      * @return Markdown table in text format, returned as String
      */
     public static String createTable(List<String> headers, List<String> rows) {
@@ -44,6 +45,7 @@ public class Table {
 
     /**
      * Creates a single row for {@param content}
+     *
      * @param content of the row
      * @return table row in text format, returned as String
      */

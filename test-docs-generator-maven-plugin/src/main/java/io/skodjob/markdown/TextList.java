@@ -20,6 +20,7 @@ public class TextList {
 
     /**
      * Creates the Markdown unordered list in text format, containing all from the {@param objects}
+     *
      * @param objects list of objects that should be inside the unordered list
      * @return Markdown unordered list in text format, returned as String
      */

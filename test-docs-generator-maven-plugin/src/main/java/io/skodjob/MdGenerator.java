@@ -196,9 +196,9 @@ public class MdGenerator {
 
     /**
      * For the provided list of steps creates table with following columns:
-     * - Step - number of the current step
-     * - Action - action done during the step
-     * - Result - expected result of the step
+     * <ul>Step - number of the current step</li>
+     * <li>Action - action done during the step</li>
+     * <li>Result - expected result of the step</li></ul>
      *
      * @param steps list of steps of the test-case
      * @return String representation of table in Markdown
@@ -216,6 +216,7 @@ public class MdGenerator {
 
     /**
      * Creates list of labels for the particular test-case in format - `label`
+     *
      *
      * @param labels list of labels from the {@link TestDoc} annotation
      * @return list of labels in {@link List<String>}
