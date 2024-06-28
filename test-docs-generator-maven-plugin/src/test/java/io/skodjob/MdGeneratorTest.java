@@ -25,7 +25,7 @@ public class MdGeneratorTest {
     void testCreateTableOfSteps() throws IOException {
         String expectedFilePath = MdGeneratorTest.class.getClassLoader().getResource("expected-docs.md").getPath();
         String generatedFilePath = "target/io/test.md";
-        MdGenerator.generate(DummyTest.class, generatedFilePath);
+        MdGenerator.generate(DummyTest.class, "", generatedFilePath);
 
         assertThat(compareFiles(expectedFilePath, generatedFilePath), is(true));
     }

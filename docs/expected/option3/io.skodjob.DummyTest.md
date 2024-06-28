@@ -18,8 +18,8 @@
 
 **Labels:**
 
-* `regression`
-* `clients`
+* [regression](labels/regression.md)
+* `clients` (description file doesn't exists)
 
 <hr style="border:1px solid">
 
@@ -31,8 +31,8 @@
 
 **Labels:**
 
-* `default`
-* `regression`
+* [default](labels/default.md)
+* [regression](labels/regression.md)
 
 
 ## testMethodOne
@@ -49,7 +49,7 @@
 
 **Labels:**
 
-* `default`
+* [default](labels/default.md)
 
 
 ## testMethodThree

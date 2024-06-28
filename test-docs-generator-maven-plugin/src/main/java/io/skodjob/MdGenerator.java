@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -39,7 +41,7 @@ import java.util.Objects;
  */
 public class MdGenerator {
 
-    private static final String LABELS = "/labels";
+    private static final String LABELS = "labels";
     private static Map<String, Map<String, String>> labelsMap = new HashMap<>();
 
     /**
@@ -53,28 +55,33 @@ public class MdGenerator {
      * Method that generates test documentation of the specified test-class.
      * Lists all methods (test-cases) annotated by {@link TestDoc} inside the {@param testClass}, creates
      * parent folders (if needed), new Markdown file for the class, and after that generates test-suite documentation using
-     * {@link #createSuiteRecord(PrintWriter, SuiteDoc)} and then test-cases documentation using {@link #createTestRecord(PrintWriter, TestDoc, String, String)},
+     * {@link #createSuiteRecord(PrintWriter, String, String, SuiteDoc)} and then test-cases documentation using {@link #createTestRecord(PrintWriter, TestDoc, String, String, String)},
      * all written inside the newly created Markdown file.
      *
      * @param testClass     for which the Markdown file is created and test-cases are documented
+     * @param docsDirPath   root path of the testing docs
      * @param classFilePath path of the Markdown file
      * @throws IOException during file creation
      */
-    public static void generate(Class<?> testClass, String classFilePath) throws IOException {
+    public static void generate(Class<?> testClass, String docsDirPath, String classFilePath) throws IOException {
         SuiteDoc suiteDoc = testClass.getAnnotation(SuiteDoc.class);
+        String classFilePathFull = docsDirPath + classFilePath;
 
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
             .sorted(Comparator.comparing(Method::getName)).toList();
 
         if (suiteDoc != null || !methods.isEmpty()) {
-            PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);
+            PrintWriter printWriter = Utils.createFilesForTestClass(classFilePathFull);
 
             // creating first level header for the test-suite
             printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
 
-            generateDocumentationForTestSuite(printWriter, suiteDoc);
-            generateDocumentationForTestCases(printWriter, classFilePath, methods);
+            int numberOfDirs = classFilePath.length() - classFilePath.replace("/", "").length();
+            String labelsFilesPath = "../".repeat(numberOfDirs) + LABELS;
+
+            generateDocumentationForTestSuite(printWriter, labelsFilesPath, classFilePathFull, suiteDoc);
+            generateDocumentationForTestCases(printWriter, labelsFilesPath, classFilePathFull, methods);
 
             printWriter.close();
         }
@@ -83,28 +90,31 @@ public class MdGenerator {
     /**
      * Generates documentation for the test-suite (test-class) if {@link SuiteDoc} is present
      *
-     * @param writer   file writer
-     * @param suiteDoc containing {@link SuiteDoc} annotation
+     * @param writer          file writer
+     * @param labelsFilesPath relative path to directory with labels files
+     * @param classFilePath   path to generated class file doc
+     * @param suiteDoc        containing {@link SuiteDoc} annotation
      */
-    private static void generateDocumentationForTestSuite(PrintWriter writer, SuiteDoc suiteDoc) {
+    private static void generateDocumentationForTestSuite(PrintWriter writer, String labelsFilesPath, String classFilePath, SuiteDoc suiteDoc) {
         if (suiteDoc != null) {
-            createSuiteRecord(writer, suiteDoc);
+            createSuiteRecord(writer, labelsFilesPath, classFilePath, suiteDoc);
         }
     }
 
     /**
      * Generates documentation records for each test-cases (test-methods) from {@param methods}
      *
-     * @param writer  file writer
-     * @param methods containing {@link TestDoc} annotation
+     * @param writer          file writer
+     * @param labelsFilesPath relative path to directory with labels files
+     * @param methods         containing {@link TestDoc} annotation
      */
-    private static void generateDocumentationForTestCases(PrintWriter writer, String classFilePath, List<Method> methods) {
+    private static void generateDocumentationForTestCases(PrintWriter writer, String labelsFilesPath, String classFilePath, List<Method> methods) {
 
         if (!methods.isEmpty()) {
             methods.forEach(method -> {
                 TestDoc testDoc = method.getAnnotation(TestDoc.class);
                 if (testDoc != null) {
-                    createTestRecord(writer, testDoc, classFilePath, method.getName());
+                    createTestRecord(writer, testDoc, labelsFilesPath, classFilePath, method.getName());
                 }
             });
         }
@@ -115,12 +125,13 @@ public class MdGenerator {
      * The record contains: name of the test as header level 2, description, steps, and use-cases obtained from the
      * {@param testDoc}.
      *
-     * @param write         file writer
-     * @param testDoc       annotation containing all @TestDoc objects, from which is the record generated
-     * @param classFilePath path to generated class file doc
-     * @param methodName    name of the test-case containing {@param testDoc}
+     * @param write           file writer
+     * @param testDoc         annotation containing all @TestDoc objects, from which is the record generated
+     * @param labelsFilesPath relative path to directory with labels files
+     * @param classFilePath   path to generated class file doc
+     * @param methodName      name of the test-case containing {@param testDoc}
      */
-    public static void createTestRecord(PrintWriter write, TestDoc testDoc, String classFilePath, String methodName) {
+    public static void createTestRecord(PrintWriter write, TestDoc testDoc, String labelsFilesPath, String classFilePath, String methodName) {
         write.println();
         write.println(Header.secondLevelHeader(methodName));
         write.println();
@@ -142,7 +153,9 @@ public class MdGenerator {
             write.println();
 
             List<String> labels = createLabels(testDoc.labels());
-            write.println(TextList.createUnorderedList(labels));
+            List<String> labelsWithLinks = createLabelsLink(labels, labelsFilesPath, classFilePath);
+
+            write.println(TextList.createUnorderedList(labelsWithLinks));
             labels.forEach(label -> {
                 // Get the existing list or create a new one if the key doesn't exist
                 String labelPure = label.replace("`", "");
@@ -161,10 +174,12 @@ public class MdGenerator {
      * The record contains: description, before tests execution steps, after tests execution steps, and use-cases obtained from the
      * {@param suiteDoc}.
      *
-     * @param write    file writer
-     * @param suiteDoc annotation containing all @SuiteDoc objects, from which is the record generated
+     * @param write           file writer
+     * @param labelsFilesPath relative path to directory with labels files
+     * @param classFilePath   path to generated class file doc
+     * @param suiteDoc        annotation containing all @SuiteDoc objects, from which is the record generated
      */
-    public static void createSuiteRecord(PrintWriter write, SuiteDoc suiteDoc) {
+    public static void createSuiteRecord(PrintWriter write, String labelsFilesPath, String classFilePath, SuiteDoc suiteDoc) {
         write.println();
         write.println(TextStyle.boldText("Description:") + " " + suiteDoc.description().value());
         write.println();
@@ -188,7 +203,7 @@ public class MdGenerator {
         if (suiteDoc.labels().length != 0) {
             write.println(TextStyle.boldText("Labels:"));
             write.println();
-            write.println(TextList.createUnorderedList(createLabels(suiteDoc.labels())));
+            write.println(TextList.createUnorderedList(createLabelsLink(createLabels(suiteDoc.labels()), labelsFilesPath, classFilePath)));
         }
 
         write.println(Line.horizontalLine());
@@ -225,6 +240,23 @@ public class MdGenerator {
         Arrays.stream(labels).forEach(testLabel -> usesText.add("`" + testLabel.value() + "`"));
 
         return usesText;
+    }
+
+    private static List<String> createLabelsLink(List<String> labels, String labelsFilePath, String classFilePath) {
+        List<String> labelsWithLinks = new ArrayList<>();
+
+        labels.forEach(label -> {
+            String pureLabel = label.replace("`", "");
+            Path path = Paths.get(classFilePath);
+
+            if (new File(path.getParent() + "/" + labelsFilePath + "/" + pureLabel + ".md").exists()) {
+                labelsWithLinks.add("[" + pureLabel + "](" + labelsFilePath + "/" + pureLabel + ".md)");
+            } else {
+                labelsWithLinks.add("`" + pureLabel + "` (description file doesn't exists)");
+            }
+        });
+
+        return labelsWithLinks;
     }
 
     /**
@@ -273,7 +305,7 @@ public class MdGenerator {
      * @param docsPath path where all test docs are stored
      */
     public static void updateLinksInLabels(String docsPath) {
-        String labelsPath = docsPath + LABELS;
+        String labelsPath = docsPath + "/" + LABELS;
 
         int numberOfDirs = docsPath.length() - docsPath.replace("/", "").length();
         String mdFilesPath = "../".repeat(numberOfDirs);

@@ -121,7 +121,7 @@ public class DocGeneratorMojo extends AbstractMojo {
                 } else {
                     getLog().debug("Skipping fmf generation");
                 }
-                MdGenerator.generate(testClass, docsPath + mdDirectoryName + entry.getKey() + ".md");
+                MdGenerator.generate(testClass, docsPath, mdDirectoryName + entry.getKey() + ".md");
 
             } catch (ClassNotFoundException | IOException ex) {
                 getLog().warn(String.format("Cannot load %s", entry.getValue()));
