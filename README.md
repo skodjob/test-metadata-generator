@@ -195,8 +195,8 @@ And specify GitHub in your pom:
 ### Links to labels
 Each label could be described in separated file with more details.
 In case the files with name in format `<LABEL>.md` exists in directory `labels` in your test-docs path defined via `docsPath`, generator will link these files.
-Anyone will be able to see the list of tests that covers a specific label. 
-Each test case documentation will allow to users to simply clink on label and see the label definition.
+Anyone will be able to see the list of tests that covers a specific label.
+Each test case documentation will allow to users to simply click on label and see its definition.
 
-In case the file doesn't exist, a not fill be put right after the label name like that `clients (description file doesn't exist)`.
+In case the file doesn't exist, the `(description file doesn't exist)` will be put right after the label. For example: `clients (description file doesn't exist)`.
 This function is only part of mark-down docs generation.

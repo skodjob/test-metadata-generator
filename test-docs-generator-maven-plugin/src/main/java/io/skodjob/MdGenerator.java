@@ -77,8 +77,7 @@ public class MdGenerator {
             // creating first level header for the test-suite
             printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
 
-            int numberOfDirs = classFilePath.length() - classFilePath.replace("/", "").length();
-            String labelsFilesPath = "../".repeat(numberOfDirs) + LABELS;
+            String labelsFilesPath = computePathToLabelFiles(classFilePath);
 
             generateDocumentationForTestSuite(printWriter, labelsFilesPath, classFilePathFull, suiteDoc);
             generateDocumentationForTestCases(printWriter, labelsFilesPath, classFilePathFull, methods);
@@ -333,5 +332,16 @@ public class MdGenerator {
                 }
             }
         }
+    }
+
+    /**
+     * Compute a relative path to the directory that contains Labels description based on md doc file
+     *
+     * @param docFilePath
+     * @return relative path form doc file to labels directory
+     */
+    private static String computePathToLabelFiles(String docFilePath) {
+        int numberOfDirs = docFilePath.length() - docFilePath.replace("/", "").length();
+        return "../".repeat(numberOfDirs) + LABELS;
     }
 }
