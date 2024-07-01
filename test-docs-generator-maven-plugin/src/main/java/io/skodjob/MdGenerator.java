@@ -152,19 +152,17 @@ public class MdGenerator {
             write.println(TextStyle.boldText("Labels:"));
             write.println();
 
-            List<String> labels = createLabels(testDoc.labels());
-            List<String> labelsWithLinks = createLabelsLink(labels, labelsFilesPath, classFilePath);
+            List<String> labelsWithLinks = createLabelsLink(testDoc.labels(), labelsFilesPath, classFilePath);
 
             write.println(TextList.createUnorderedList(labelsWithLinks));
-            labels.forEach(label -> {
+            Arrays.stream(testDoc.labels()).forEach(label -> {
                 // Get the existing list or create a new one if the key doesn't exist
-                String labelPure = label.replace("`", "");
-                Map<String, String> existingMap = labelsMap.getOrDefault(labelPure, new HashMap<>());
+                Map<String, String> existingMap = labelsMap.getOrDefault(label.value(), new HashMap<>());
                 // Add the new value to the list
                 existingMap.put(methodName, classFilePath);
 
                 // Put the updated list back into the map
-                labelsMap.put(labelPure, existingMap);
+                labelsMap.put(label.value(), existingMap);
             });
         }
     }
@@ -203,7 +201,7 @@ public class MdGenerator {
         if (suiteDoc.labels().length != 0) {
             write.println(TextStyle.boldText("Labels:"));
             write.println();
-            write.println(TextList.createUnorderedList(createLabelsLink(createLabels(suiteDoc.labels()), labelsFilesPath, classFilePath)));
+            write.println(TextList.createUnorderedList(createLabelsLink(suiteDoc.labels(), labelsFilesPath, classFilePath)));
         }
 
         write.println(Line.horizontalLine());
@@ -250,17 +248,17 @@ public class MdGenerator {
      * @param classFilePath  path to final md file
      * @return list of final String for each label
      */
-    private static List<String> createLabelsLink(List<String> labels, String labelsFilePath, String classFilePath) {
+    private static List<String> createLabelsLink(Label[] labels, String labelsFilePath, String classFilePath) {
         List<String> labelsWithLinks = new ArrayList<>();
 
-        labels.forEach(label -> {
-            String pureLabel = label.replace("`", "");
+        Arrays.stream(labels).forEach(label -> {
+            String pureLabel = label.value().replace("`", "");
             Path path = Paths.get(classFilePath);
 
             if (new File(path.getParent() + "/" + labelsFilePath + "/" + pureLabel + ".md").exists()) {
                 labelsWithLinks.add("[" + pureLabel + "](" + labelsFilePath + "/" + pureLabel + ".md)");
             } else {
-                labelsWithLinks.add("`" + pureLabel + "` (description file doesn't exists)");
+                labelsWithLinks.add("`" + pureLabel + "` (description file doesn't exist)");
             }
         });
 

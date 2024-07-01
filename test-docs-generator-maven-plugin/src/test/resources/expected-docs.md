@@ -18,8 +18,8 @@
 
 **Labels:**
 
-* `regression` (description file doesn't exists)
-* `clients` (description file doesn't exists)
+* `regression` (description file doesn't exist)
+* `clients` (description file doesn't exist)
 
 <hr style="border:1px solid">
 
@@ -31,8 +31,8 @@
 
 **Labels:**
 
-* `default` (description file doesn't exists)
-* `regression` (description file doesn't exists)
+* `default` (description file doesn't exist)
+* `regression` (description file doesn't exist)
 
 
 ## testMethodOne
@@ -49,7 +49,7 @@
 
 **Labels:**
 
-* `default` (description file doesn't exists)
+* `default` (description file doesn't exist)
 
 
 ## testMethodThree

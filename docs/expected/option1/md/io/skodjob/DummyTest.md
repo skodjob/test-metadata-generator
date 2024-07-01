@@ -19,7 +19,7 @@
 **Labels:**
 
 * [regression](../../../labels/regression.md)
-* `clients` (description file doesn't exists)
+* `clients` (description file doesn't exist)
 
 <hr style="border:1px solid">
 

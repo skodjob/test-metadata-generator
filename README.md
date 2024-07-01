@@ -156,10 +156,10 @@ Without it the plugin will return `NoClassDefFound` exception and will fail.
 #### Accepted Parameters
 
 Plugin works with the following parameters:
-* `filePath` - path to the built classes, from where all the names of the tests are taken.
-* `generatePath` - path to the place where the documentation should be generated.
+* `testsPath` - path to the built classes, from where all the names of the tests are taken.
+* `docsPath` - path to the place where the documentation should be generated.
 * `generateFmf` - boolean value whether generator should generate also `fmf` metadata or just `Markdown`.
-
+* `generateDirs` - boolean value whether generator should generate folder for each part of package name or not.
 
 ### Use SNAPSHOT version
 
@@ -191,3 +191,12 @@ And specify GitHub in your pom:
         </repository>
     </repositories>
 ```
+
+### Links to labels
+Each label could be described in separated file with more details.
+In case the files with name in format `<LABEL>.md` exists in directory `labels` in your test-docs path defined via `docsPath`, generator will link these files.
+Anyone will be able to see the list of tests that covers a specific label. 
+Each test case documentation will allow to users to simply clink on label and see the label definition.
+
+In case the file doesn't exist, a not fill be put right after the label name like that `clients (description file doesn't exist)`.
+This function is only part of mark-down docs generation.
