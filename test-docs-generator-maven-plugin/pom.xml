@@ -60,8 +60,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <jupiter.version>5.10.2</jupiter.version>
-        <maven-plugin-api.version>3.9.3</maven-plugin-api.version>
-        <maven-plugin-annotations.version>3.9.0</maven-plugin-annotations.version>
+        <maven-plugin-api.version>3.9.8</maven-plugin-api.version>
+        <maven-plugin-annotations.version>3.13.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <hamcrest.version>2.2</hamcrest.version>
         <junit.jupiter.version>5.10.3</junit.jupiter.version>
