@@ -1,6 +1,6 @@
 ---
 apiVersion: backstage.io/v1alpha1
-kind: System
+kind: Component
 metadata:
   name: test-metadata-generator
   title: Test Metadata Generator
@@ -16,5 +16,7 @@ metadata:
       url: https://github.com/skodjob/test-metadata-generator/blob/main/README.md
       icon: help
 spec:
+  type: library
+  lifecycle: production
   owner: group:redhat/skodjob
   domain: quality-community/quality-community
