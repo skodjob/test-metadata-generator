@@ -310,7 +310,7 @@ public class MdGenerator {
      * @param docsPath path where all test docs are stored
      */
     public static void updateLinksInLabels(String docsPath) {
-        String labelsPath = docsPath + "/" + LABELS;
+        String labelsPath = docsPath + LABELS;
 
         int numberOfDirs = docsPath.length() - docsPath.replace("/", "").length();
         String mdFilesPath = "../".repeat(numberOfDirs);
