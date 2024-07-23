@@ -108,6 +108,11 @@ public class DocGeneratorMojo extends AbstractMojo {
             getLog().debug(url.getFile());
         }
 
+        // Ensure that docsPath ends with /
+        if (!docsPath.endsWith("/")) {
+            docsPath += "/";
+        }
+
         Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath, generateDirs);
         for (Map.Entry<String, String> entry : classes.entrySet()) {
             try {
