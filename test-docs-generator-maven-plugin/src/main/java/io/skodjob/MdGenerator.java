@@ -312,9 +312,6 @@ public class MdGenerator {
     public static void updateLinksInLabels(String docsPath) {
         String labelsPath = docsPath + LABELS;
 
-        int numberOfDirs = docsPath.length() - docsPath.replace("/", "").length();
-        String mdFilesPath = "../".repeat(numberOfDirs);
-
         if (Files.exists(new File(labelsPath).toPath())) {
             for (Map.Entry<String, Map<String, String>> entry : MdGenerator.labelsMap.entrySet()) {
                 String labelsFile = labelsPath + "/" + entry.getKey() + ".md";
@@ -322,7 +319,7 @@ public class MdGenerator {
                 if (Files.exists(new File(labelsFile).toPath())) {
                     StringBuilder newText = new StringBuilder("**Tests:**");
                     for (Map.Entry<String, String> item : entry.getValue().entrySet()) {
-                        String data = String.format("[%s](%s%s)", item.getKey(), mdFilesPath, item.getValue());
+                        String data = String.format("[%s](%s%s)", item.getKey(), "../", item.getValue().replace(docsPath, ""));
                         newText.append("\n- ").append(data);
                     }
 

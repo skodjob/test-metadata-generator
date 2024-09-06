@@ -6,4 +6,4 @@
 
 <!-- generated part -->
 **Tests:**
-- [testMethodFour](../../../.././docs/actual/option1/md/io/skodjob/DummyTest.md)
+- [testMethodFour](../md/io/skodjob/DummyTest.md)
