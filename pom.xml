@@ -57,7 +57,7 @@
         <spotbugs.version>4.8.6</spotbugs.version>
 
         <!-- Maven build versions & properties-->
-        <maven.spotbugs.version>4.8.6.2</maven.spotbugs.version>
+        <maven.spotbugs.version>4.8.6.3</maven.spotbugs.version>
         <maven.checkstyle.version>3.5.0</maven.checkstyle.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
