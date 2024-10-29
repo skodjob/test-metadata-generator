@@ -53,12 +53,12 @@
         <generatorRootDirectory>${basedir}</generatorRootDirectory>
 
         <!-- Build tools -->
-        <checkstyle.version>10.18.2</checkstyle.version>
+        <checkstyle.version>10.19.0</checkstyle.version>
         <spotbugs.version>4.8.6</spotbugs.version>
 
         <!-- Maven build versions & properties-->
-        <maven.spotbugs.version>4.8.6.4</maven.spotbugs.version>
-        <maven.checkstyle.version>3.5.0</maven.checkstyle.version>
+        <maven.spotbugs.version>4.8.6.5</maven.spotbugs.version>
+        <maven.checkstyle.version>3.6.0</maven.checkstyle.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,7 +68,7 @@
         <sonatype.nexus.central>0.6.0</sonatype.nexus.central>
         <maven.javadoc.version>3.10.1</maven.javadoc.version>
         <maven.assembly.version>3.7.1</maven.assembly.version>
-        <maven.plugin.plugin.version>3.15.0</maven.plugin.plugin.version>
+        <maven.plugin.plugin.version>3.15.1</maven.plugin.plugin.version>
     </properties>
 
     <dependencyManagement>
