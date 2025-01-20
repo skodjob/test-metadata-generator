@@ -54,7 +54,7 @@
 
         <!-- Build tools -->
         <checkstyle.version>10.21.1</checkstyle.version>
-        <spotbugs.version>4.8.6</spotbugs.version>
+        <spotbugs.version>4.9.0</spotbugs.version>
 
         <!-- Maven build versions & properties-->
         <maven.spotbugs.version>4.8.6.6</maven.spotbugs.version>
