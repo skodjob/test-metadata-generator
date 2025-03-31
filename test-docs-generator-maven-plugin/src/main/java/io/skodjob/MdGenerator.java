@@ -29,10 +29,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * The MdGenerator generates Markdown files for each documented test-case inside the test-class
@@ -42,7 +43,7 @@ import java.util.Objects;
 public class MdGenerator {
 
     private static final String LABELS = "labels";
-    private static Map<String, Map<String, String>> labelsMap = new HashMap<>();
+    private static Map<String, Map<String, String>> labelsMap = new TreeMap<>();
 
     /**
      * Private Constructor
@@ -69,7 +70,7 @@ public class MdGenerator {
 
         List<Method> methods = Arrays.stream(testClass.getDeclaredMethods())
             .filter(method -> method.getAnnotation(TestDoc.class) != null)
-            .sorted(Comparator.comparing(Method::getName)).toList();
+            .sorted(Comparator.comparing((Method m) -> m.getName().toLowerCase(Locale.ENGLISH))).toList();
 
         if (suiteDoc != null || !methods.isEmpty()) {
             PrintWriter printWriter = Utils.createFilesForTestClass(classFilePathFull);
@@ -156,7 +157,7 @@ public class MdGenerator {
             write.println(TextList.createUnorderedList(labelsWithLinks));
             Arrays.stream(testDoc.labels()).forEach(label -> {
                 // Get the existing list or create a new one if the key doesn't exist
-                Map<String, String> existingMap = labelsMap.getOrDefault(label.value(), new HashMap<>());
+                Map<String, String> existingMap = labelsMap.getOrDefault(label.value(), new TreeMap<>());
                 // Add the new value to the list
                 existingMap.put(methodName, classFilePath);
 
