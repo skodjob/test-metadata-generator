@@ -53,8 +53,8 @@
         <generatorRootDirectory>${basedir}</generatorRootDirectory>
 
         <!-- Build tools -->
-        <checkstyle.version>10.26.1</checkstyle.version>
-        <spotbugs.version>4.9.3</spotbugs.version>
+        <checkstyle.version>11.0.0</checkstyle.version>
+        <spotbugs.version>4.9.4</spotbugs.version>
 
         <!-- Maven build versions & properties-->
         <maven.spotbugs.version>4.9.3.2</maven.spotbugs.version>
