@@ -67,7 +67,7 @@
         <junit.jupiter.version>5.13.4</junit.jupiter.version>
         <junit.platform.version>1.13.4</junit.platform.version>
         <maven.surefire.version>3.5.3</maven.surefire.version>
-        <snakeyaml.version>2.4</snakeyaml.version>
+        <snakeyaml.version>2.5</snakeyaml.version>
     </properties>
 
     <dependencies>
