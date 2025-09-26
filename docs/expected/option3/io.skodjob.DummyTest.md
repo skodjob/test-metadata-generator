@@ -2,14 +2,14 @@
 
 **Description:** My test suite containing various tests
 
-**Before tests execution steps:**
+**Before test execution steps:**
 
 | Step | Action | Result |
 | - | - | - |
 | 1. | Deploy uber operator across all namespaces, with custom configuration | Uber operator is deployed |
 | 2. | Deploy management Pod for accessing all other Pods | Management Pod is deployed |
 
-**After tests execution steps:**
+**After test execution steps:**
 
 | Step | Action | Result |
 | - | - | - |

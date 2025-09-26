@@ -187,13 +187,13 @@ public class MdGenerator {
         }
 
         if (suiteDoc.beforeTestSteps().length != 0) {
-            write.println(TextStyle.boldText("Before tests execution steps:"));
+            write.println(TextStyle.boldText("Before test execution steps:"));
             write.println();
             write.println(createTableOfSteps(suiteDoc.beforeTestSteps()));
         }
 
         if (suiteDoc.afterTestSteps().length != 0) {
-            write.println(TextStyle.boldText("After tests execution steps:"));
+            write.println(TextStyle.boldText("After test execution steps:"));
             write.println();
             write.println(createTableOfSteps(suiteDoc.afterTestSteps()));
         }
