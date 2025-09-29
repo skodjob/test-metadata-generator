@@ -6,12 +6,23 @@ package io.skodjob;
 
 import io.skodjob.common.Utils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.repository.RepositorySystem;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;
+import org.apache.maven.shared.dependency.graph.DependencyNode;
+
+import javax.inject.Inject;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,10 +31,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * DocGeneratorMojo class for Maven plugin handling
@@ -85,6 +98,15 @@ public class DocGeneratorMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
+    MavenSession session;
+
+    @Inject
+    DependencyGraphBuilder dependencyGraphBuilder;
+
+    @Inject
+    RepositorySystem respositorySystem;
+
     /**
      * Method for the execution of the test-docs-generator Maven plugin
      * Generates documentation of test-cases based on specified parameters:
@@ -92,7 +114,8 @@ public class DocGeneratorMojo extends AbstractMojo {
      * <li>{@link #docsPath}</li>
      * <li>{@link #project}</li></ul>
      */
-    public void execute() {
+    @Override
+    public void execute() throws MojoExecutionException {
 
         getLog().info("Starting generator");
 
@@ -200,12 +223,51 @@ public class DocGeneratorMojo extends AbstractMojo {
         }
     }
 
-    private void addDependenciesToClassPath(Set<URI> classpath) {
-        project.getArtifacts()
-            .stream()
-            .map(Artifact::getFile)
-            .filter(Objects::nonNull)
-            .map(File::toURI)
-            .forEach(classpath::add);
+    private void addDependenciesToClassPath(Set<URI> classpath) throws MojoExecutionException {
+        ProjectBuildingRequest buildingRequest =
+                new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
+
+        buildingRequest.setProject(project);
+        buildingRequest.setResolveDependencies(true);
+
+        DependencyNode projectRoot;
+
+        try {
+            projectRoot = dependencyGraphBuilder.buildDependencyGraph(buildingRequest, null);
+        } catch (DependencyGraphBuilderException e) {
+            throw new MojoExecutionException("Cannot build project dependency graph", e);
+        }
+
+        getLog().debug("Project root node %s".formatted(projectRoot.toNodeString()));
+
+        walk(projectRoot.getChildren())
+                .map(DependencyNode::getArtifact)
+                .map(this::resolve)
+                .map(Artifact::getFile)
+                .filter(Objects::nonNull)
+                .map(File::toURI)
+                .forEach(classpath::add);
+    }
+
+    /**
+     * Flatten all dependency nodes and descendants to a stream.
+     */
+    private Stream<DependencyNode> walk(List<DependencyNode> nodes) {
+        return nodes.stream().flatMap(node -> Stream.concat(Stream.of(node), walk(node.getChildren())));
+    }
+
+    /**
+     * Attempt to resolve the artifact's file if not present using the repository.
+     */
+    private Artifact resolve(Artifact artifact) {
+        if (artifact.getFile() == null) {
+            getLog().debug("Resolving artifact: %s".formatted(artifact));
+            var artifactRequest = new ArtifactResolutionRequest();
+            artifactRequest.setArtifact(artifact);
+            var result = respositorySystem.resolve(artifactRequest);
+            // Request only asked for a single artifact, so grab it from the results, defaulting to the original
+            return result.getArtifacts().stream().findFirst().orElse(artifact);
+        }
+        return artifact;
     }
 }
