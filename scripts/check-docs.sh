@@ -16,10 +16,16 @@ compare_files() {
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# Get module name from argument
+MODULE_NAME="$1"
+if [ -z "$MODULE_NAME" ]; then
+    echo "Usage: $0 <module-name>"
+    exit 1
+fi
+
 # Base directories
-CURRENT_DIR="$SCRIPT_DIR/../docs"
-EXPECTED_DIR="$CURRENT_DIR/expected"
-ACTUAL_DIR="$CURRENT_DIR/actual"
+EXPECTED_DIR="$SCRIPT_DIR/../docs/expected"
+ACTUAL_DIR="$SCRIPT_DIR/../$MODULE_NAME/target/test-docs/actual"
 
 LABEL1="labels/default.md"
 LABEL2="labels/regression.md"

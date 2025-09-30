@@ -2,10 +2,7 @@
 **/target
 .DS_Store
 *.iml
-docs/actual/*/fmf/
-docs/actual/*/md/
-docs/actual/*/io/
-docs/actual/*/io*.md
+
 # Eclipse project
 .project
 
