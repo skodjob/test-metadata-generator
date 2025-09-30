@@ -5,21 +5,38 @@
 package io.skodjob;
 
 import io.skodjob.common.Utils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.repository.RepositorySystem;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;
+import org.apache.maven.shared.dependency.graph.DependencyNode;
+
+import javax.inject.Inject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * DocGeneratorMojo class for Maven plugin handling
@@ -37,6 +54,18 @@ public class DocGeneratorMojo extends AbstractMojo {
     public DocGeneratorMojo() {
         // constructor
     }
+
+    /**
+     * Whether project dependencies should be added to the class path
+     */
+    @Parameter(property = "includeDependencies", defaultValue = "false", required = false, readonly = false)
+    boolean includeDependencies;
+
+    /**
+     * Directory path where class path libraries can be found
+     */
+    @Parameter(property = "libraryPath", defaultValue = "${project.build.directory}", required = false, readonly = false)
+    File libraryPath;
 
     /**
      * Path where are all test-classes stored
@@ -69,43 +98,48 @@ public class DocGeneratorMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
-    /**
-     * Descriptor of the plugin
-     * Defaults to current plugin
-     */
-    @Parameter(defaultValue = "${plugin}", readonly = true)
-    PluginDescriptor descriptor;
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
+    MavenSession session;
+
+    @Inject
+    DependencyGraphBuilder dependencyGraphBuilder;
+
+    @Inject
+    RepositorySystem respositorySystem;
 
     /**
      * Method for the execution of the test-docs-generator Maven plugin
      * Generates documentation of test-cases based on specified parameters:
      * <ul><li>{@link #testsPath}</li>
      * <li>{@link #docsPath}</li>
-     * <li>{@link #project}</li>
-     * <li>{@link #descriptor}</li></ul>
+     * <li>{@link #project}</li></ul>
      */
-    public void execute() {
+    @Override
+    public void execute() throws MojoExecutionException {
 
         getLog().info("Starting generator");
 
-        final ClassRealm classRealm = descriptor.getClassRealm();
+        Set<URI> classpath = new TreeSet<>();
 
-        try {
-            // Add target/classes
-            File classesFiles = new File(project.getBuild().getOutputDirectory());
-            classRealm.addURL(classesFiles.toURI().toURL());
-            // Add target/test-classes
-            classesFiles = new File(project.getBuild().getTestOutputDirectory());
-            classRealm.addURL(classesFiles.toURI().toURL());
-            // Add all jar files in target lib
-            addJarFilesToClassPath(new File(project.getBuild().getDirectory()), classRealm);
-        } catch (MalformedURLException e) {
-            getLog().error(e);
+        // Add target/classes
+        File classesFiles = new File(project.getBuild().getOutputDirectory());
+        classpath.add(classesFiles.toURI());
+
+        // Add target/test-classes
+        classesFiles = new File(project.getBuild().getTestOutputDirectory());
+        classpath.add(classesFiles.toURI());
+
+        // Add all jar files in target lib
+        addJarFilesToClassPath(libraryPath, classpath);
+
+        if (includeDependencies) {
+            // Add project dependencies
+            addDependenciesToClassPath(classpath);
         }
 
         getLog().debug("Loaded files in classpath:");
-        for (URL url : classRealm.getURLs()) {
-            getLog().debug(url.getFile());
+        for (URI uri : classpath) {
+            getLog().debug(uri.getPath());
         }
 
         // Ensure that docsPath ends with /
@@ -113,30 +147,49 @@ public class DocGeneratorMojo extends AbstractMojo {
             docsPath += "/";
         }
 
-        Map<String, String> classes = Utils.getTestClassesWithTheirPath(testsPath, generateDirs);
-        for (Map.Entry<String, String> entry : classes.entrySet()) {
-            try {
-                Class<?> testClass = classRealm.loadClass(entry.getValue());
-                // In case user don't want to generate fmf, the md file won't be in md folder
-                String mdDirectoryName = "";
-                if (generateFmf) {
-                    // Add md folder to the path
-                    mdDirectoryName = "md/";
-                    FmfGenerator.generate(testClass, docsPath + "fmf/" + entry.getKey() + ".fmf");
-                } else {
-                    getLog().debug("Skipping fmf generation");
-                }
-                MdGenerator.generate(testClass, docsPath, mdDirectoryName + entry.getKey() + ".md");
+        URL[] locators = classpath.stream()
+                .map(uri -> {
+                    try {
+                        return uri.toURL();
+                    } catch (MalformedURLException e) {
+                        getLog().error(e);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(URL[]::new);
 
-            } catch (ClassNotFoundException | IOException ex) {
-                getLog().warn(String.format("Cannot load %s", entry.getValue()));
-                getLog().error(ex);
+        try (URLClassLoader loader = new URLClassLoader(locators, Thread.currentThread().getContextClassLoader())) {
+            for (var entry : Utils.getTestClassesWithTheirPath(testsPath, generateDirs).entrySet()) {
+                generate(loader, entry.getKey(), entry.getValue());
             }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
 
         MdGenerator.updateLinksInLabels(docsPath);
 
         getLog().info("Done");
+    }
+
+    private void generate(ClassLoader loader, String filename, String className) {
+        try {
+            Class<?> testClass = loader.loadClass(className);
+            // In case user don't want to generate fmf, the md file won't be in md folder
+            String mdDirectoryName = "";
+            if (generateFmf) {
+                // Add md folder to the path
+                mdDirectoryName = "md/";
+                FmfGenerator.generate(testClass, docsPath + "fmf/" + filename + ".fmf");
+            } else {
+                getLog().debug("Skipping fmf generation");
+            }
+            MdGenerator.generate(testClass, docsPath, mdDirectoryName + filename + ".md");
+
+        } catch (ClassNotFoundException | IOException ex) {
+            getLog().warn(String.format("Cannot load %s", className));
+            getLog().error(ex);
+        }
     }
 
     /**
@@ -145,10 +198,9 @@ public class DocGeneratorMojo extends AbstractMojo {
      * <li>otherwise adds the .jar files to classPath</li></ul>
      *
      * @param directory  where the files are listed
-     * @param classRealm realm containing all libs set on classPath, from where the test-classes will be loaded
-     * @throws MalformedURLException during URL construction
+     * @param classpath set containing all libs set on classPath, from where the test-classes will be loaded
      */
-    public void addJarFilesToClassPath(File directory, ClassRealm classRealm) throws MalformedURLException {
+    public void addJarFilesToClassPath(File directory, Set<URI> classpath) {
         // Check if the provided file is a directory
         if (!directory.isDirectory()) {
             getLog().warn("Provided file is not a directory.");
@@ -161,13 +213,61 @@ public class DocGeneratorMojo extends AbstractMojo {
             for (File file : files) {
                 if (file.isDirectory()) {
                     // Recursively call the method for subdirectories
-                    addJarFilesToClassPath(file, classRealm);
+                    addJarFilesToClassPath(file, classpath);
                 } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".jar")) {
                     // Print the absolute path if it's a .jar file
                     getLog().debug("Found .jar file: " + file.getAbsolutePath());
-                    classRealm.addURL(file.toURI().toURL());
+                    classpath.add(file.toURI());
                 }
             }
         }
+    }
+
+    private void addDependenciesToClassPath(Set<URI> classpath) throws MojoExecutionException {
+        ProjectBuildingRequest buildingRequest =
+                new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
+
+        buildingRequest.setProject(project);
+        buildingRequest.setResolveDependencies(true);
+
+        DependencyNode projectRoot;
+
+        try {
+            projectRoot = dependencyGraphBuilder.buildDependencyGraph(buildingRequest, null);
+        } catch (DependencyGraphBuilderException e) {
+            throw new MojoExecutionException("Cannot build project dependency graph", e);
+        }
+
+        getLog().debug("Project root node %s".formatted(projectRoot.toNodeString()));
+
+        walk(projectRoot.getChildren())
+                .map(DependencyNode::getArtifact)
+                .map(this::resolve)
+                .map(Artifact::getFile)
+                .filter(Objects::nonNull)
+                .map(File::toURI)
+                .forEach(classpath::add);
+    }
+
+    /**
+     * Flatten all dependency nodes and descendants to a stream.
+     */
+    private Stream<DependencyNode> walk(List<DependencyNode> nodes) {
+        return nodes.stream().flatMap(node -> Stream.concat(Stream.of(node), walk(node.getChildren())));
+    }
+
+    /**
+     * Attempt to resolve the artifact's file if not present using the repository.
+     */
+    private Artifact resolve(Artifact artifact) {
+        if (artifact.getFile() == null) {
+            getLog().debug("Resolving artifact: %s".formatted(artifact));
+            var artifactRequest = new ArtifactResolutionRequest();
+            artifactRequest.setArtifact(artifact);
+            var result = respositorySystem.resolve(artifactRequest);
+            // Request only asked for a single artifact, so grab it from the results, defaulting to the original
+            return result.getArtifacts().stream().findFirst().orElse(artifact);
+        }
+        return artifact;
     }
 }

@@ -6,7 +6,6 @@
 
     <packaging>jar</packaging>
     <artifactId>dummy-module</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
 
     <parent>
         <groupId>io.skodjob</groupId>
@@ -69,6 +68,10 @@
             <artifactId>test-docs-generator-maven-plugin</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -103,6 +106,9 @@
                             <docsPath>./docs/actual/option1/</docsPath>
                             <generateFmf>true</generateFmf>
                             <generateDirs>true</generateDirs>
+                            <!-- Library path not found - generator relies entirely on dependencies -->
+                            <includeDependencies>true</includeDependencies>
+                            <libraryPath>${project.build.directory}/no-such-directory</libraryPath>
                         </configuration>
                     </execution>
                     <execution>
@@ -116,6 +122,9 @@
                             <docsPath>./docs/actual/option2/</docsPath>
                             <generateFmf>true</generateFmf>
                             <generateDirs>false</generateDirs>
+                            <!-- Library path not found - generator relies entirely on dependencies -->
+                            <includeDependencies>true</includeDependencies>
+                            <libraryPath>${project.build.directory}/no-such-directory</libraryPath>
                         </configuration>
                     </execution>
                     <execution>
@@ -129,6 +138,8 @@
                             <docsPath>./docs/actual/option3/</docsPath>
                             <generateFmf>false</generateFmf>
                             <generateDirs>false</generateDirs>
+                            <!-- Library path defaults to `target` - generator relies entirely on copied jars -->
+                            <includeDependencies>false</includeDependencies>
                         </configuration>
                     </execution>
                     <execution>
@@ -142,13 +153,17 @@
                             <docsPath>./docs/actual/option4/</docsPath>
                             <generateFmf>false</generateFmf>
                             <generateDirs>true</generateDirs>
+                            <!-- Both copied jar files and dependencies on class path, no conflicts -->
+                            <includeDependencies>true</includeDependencies>
+                            <libraryPath>${project.build.directory}/lib</libraryPath>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <id>Check generated data</id>

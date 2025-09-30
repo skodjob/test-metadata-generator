@@ -10,6 +10,8 @@ import io.skodjob.annotations.Label;
 import io.skodjob.annotations.Step;
 import io.skodjob.annotations.SuiteDoc;
 import io.skodjob.annotations.TestDoc;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.Extension;
 
 @SuiteDoc(
     description = @Desc("My test suite containing various tests"),
@@ -26,7 +28,9 @@ import io.skodjob.annotations.TestDoc;
         @Label(value = "clients")
     }
 )
-public class DummyTest {
+// Implements JUnit extension to force requirement that JUnit API is properly on the class-path when
+// this class is loaded.
+class DummyTest implements Extension {
 
     @TestDoc(
         description = @Desc("Test checking that the application works as expected"),
@@ -39,6 +43,7 @@ public class DummyTest {
             @Label(value = "default")
         }
     )
+    @Test
     void testMethodOne() {
 
     }
@@ -54,6 +59,7 @@ public class DummyTest {
             @Step(value = "Do a magic cleanup check", expected = "Everything magically work")
         }
     )
+    @Test
     void testMethodTwo() {
 
     }
@@ -63,6 +69,7 @@ public class DummyTest {
             "This is just a little bit longer line, nothing else."),
         contact = @Contact(name = "Jakub Stejskal", email = "ja@kub.io")
     )
+    @Test
     void testMethodThree() {
 
     }
@@ -76,6 +83,7 @@ public class DummyTest {
             @Label(value = "regression"),
         }
     )
+    @Test
     void testMethodFour() {
 
     }
