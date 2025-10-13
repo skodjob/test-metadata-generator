@@ -53,11 +53,9 @@ public class FmfGenerator {
             .sorted(Comparator.comparing(Method::getName)).toList();
 
         if (!methods.isEmpty()) {
-            PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath);
-
-            generateDocumentationForTestCases(printWriter, methods);
-
-            printWriter.close();
+            try (PrintWriter printWriter = Utils.createFilesForTestClass(classFilePath)) {
+                generateDocumentationForTestCases(printWriter, methods);
+            }
         }
     }
 

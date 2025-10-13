@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,17 +74,15 @@ public class MdGenerator {
             .sorted(Comparator.comparing((Method m) -> m.getName().toLowerCase(Locale.ENGLISH))).toList();
 
         if (suiteDoc != null || !methods.isEmpty()) {
-            PrintWriter printWriter = Utils.createFilesForTestClass(classFilePathFull);
+            try (PrintWriter printWriter = Utils.createFilesForTestClass(classFilePathFull)) {
+                // creating first level header for the test-suite
+                printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
 
-            // creating first level header for the test-suite
-            printWriter.println(Header.firstLevelHeader(testClass.getSimpleName()));
+                String labelsFilesPath = computePathToLabelFiles(classFilePath);
 
-            String labelsFilesPath = computePathToLabelFiles(classFilePath);
-
-            generateDocumentationForTestSuite(printWriter, labelsFilesPath, classFilePathFull, suiteDoc);
-            generateDocumentationForTestCases(printWriter, labelsFilesPath, classFilePathFull, methods);
-
-            printWriter.close();
+                generateDocumentationForTestSuite(printWriter, labelsFilesPath, classFilePathFull, suiteDoc);
+                generateDocumentationForTestCases(printWriter, labelsFilesPath, classFilePathFull, methods);
+            }
         }
     }
 
@@ -277,7 +276,7 @@ public class MdGenerator {
             StringBuilder fileContent = new StringBuilder();
             boolean foundGeneratedPart = false;
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(markdownFile))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(markdownFile, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.contains("<!-- generated part -->")) {
@@ -295,13 +294,13 @@ public class MdGenerator {
             // Append the new content
             fileContent.append(updatedData).append("\n");
             // Write the updated content back to the file
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(markdownFile, StandardCharsets.UTF_8))) {
                 writer.write(fileContent.toString());
             }
             System.out.println("Content of %s updated successfully!".formatted(labelFilePath));
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to update label file: " + labelFilePath, e);
         }
     }
 

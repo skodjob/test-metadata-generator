@@ -105,7 +105,7 @@ public class DocGeneratorMojo extends AbstractMojo {
     DependencyGraphBuilder dependencyGraphBuilder;
 
     @Inject
-    RepositorySystem respositorySystem;
+    RepositorySystem repositorySystem;
 
     /**
      * Method for the execution of the test-docs-generator Maven plugin
@@ -264,7 +264,7 @@ public class DocGeneratorMojo extends AbstractMojo {
             getLog().debug("Resolving artifact: %s".formatted(artifact));
             var artifactRequest = new ArtifactResolutionRequest();
             artifactRequest.setArtifact(artifact);
-            var result = respositorySystem.resolve(artifactRequest);
+            var result = repositorySystem.resolve(artifactRequest);
             // Request only asked for a single artifact, so grab it from the results, defaulting to the original
             return result.getArtifacts().stream().findFirst().orElse(artifact);
         }
