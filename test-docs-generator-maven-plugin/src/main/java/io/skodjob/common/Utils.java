@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,7 +50,6 @@ public class Utils {
             try (Stream<Path> pathStream = Files.list(packagePath)) {
                 pathStream.forEach(path -> classes.putAll(getClassesForPackage(classes, path, generateDirs)));
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         } else {
@@ -105,7 +105,7 @@ public class Utils {
         final File classFile = new File(parent, fileName);
         classFile.createNewFile();
 
-        FileWriter write = new FileWriter(classFile);
+        FileWriter write = new FileWriter(classFile, StandardCharsets.UTF_8);
         return new PrintWriter(write);
     }
 }
