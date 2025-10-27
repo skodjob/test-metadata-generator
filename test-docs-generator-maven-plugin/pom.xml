@@ -61,7 +61,7 @@
 
         <jupiter.version>5.10.2</jupiter.version>
         <maven-plugin-api.version>3.9.11</maven-plugin-api.version>
-        <maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
+        <maven-plugin-annotations.version>3.15.2</maven-plugin-annotations.version>
         <maven-core.version>3.9.11</maven-core.version>
         <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
         <hamcrest.version>3.0</hamcrest.version>
