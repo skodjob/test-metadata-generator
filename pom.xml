@@ -65,11 +65,11 @@
         <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
         <maven.deploy.plugin.version>3.1.4</maven.deploy.plugin.version>
         <maven.gpg.version>3.2.8</maven.gpg.version>
-        <sonatype.nexus.central>0.9.0</sonatype.nexus.central>
+        <sonatype.nexus.central>0.10.0</sonatype.nexus.central>
         <maven.javadoc.version>3.12.0</maven.javadoc.version>
         <maven.assembly.version>3.8.0</maven.assembly.version>
         <maven.plugin.plugin.version>3.15.2</maven.plugin.plugin.version>
-        <jupiter.version>6.0.1</jupiter.version>
+        <jupiter.version>6.0.3</jupiter.version>
     </properties>
 
     <dependencyManagement>
